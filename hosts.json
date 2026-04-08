@@ -1,0 +1,23 @@
+[
+  {
+    "name": "ac-8zro4lk-shard-00-02.atssx8t.mongodb.net",
+    "port": 27017,
+    "priority": 0,
+    "weight": 0,
+    "type": "SRV"
+  },
+  {
+    "name": "ac-8zro4lk-shard-00-01.atssx8t.mongodb.net",
+    "port": 27017,
+    "priority": 0,
+    "weight": 0,
+    "type": "SRV"
+  },
+  {
+    "name": "ac-8zro4lk-shard-00-00.atssx8t.mongodb.net",
+    "port": 27017,
+    "priority": 0,
+    "weight": 0,
+    "type": "SRV"
+  }
+]
