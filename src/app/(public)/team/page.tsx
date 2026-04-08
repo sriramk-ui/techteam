@@ -8,16 +8,17 @@ export const metadata: Metadata = {
   description: 'Get to know the talented individuals behind TeamOS — developers, designers, and problem-solvers.',
 };
 
+import { User } from '@/models/User';
+import connectToDatabase from '@/lib/db';
+
 async function getTeamMembers() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/users/public`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.users || [];
-  } catch {
+    await connectToDatabase();
+    // Return Lean objects for plain JSON serialization
+    const users = await User.find({}).select('name role profilePic socialLinks').lean();
+    return JSON.parse(JSON.stringify(users));
+  } catch (error) {
+    console.error('Error fetching public team members:', error);
     return [];
   }
 }

@@ -7,16 +7,16 @@ export const metadata: Metadata = {
   description: 'Hackathons, workshops, and competitions we have participated in.',
 };
 
+import { Event } from '@/models/Event';
+import connectToDatabase from '@/lib/db';
+
 async function getPublicEvents() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/events/public`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.events || [];
-  } catch {
+    await connectToDatabase();
+    const events = await Event.find({}).lean();
+    return JSON.parse(JSON.stringify(events));
+  } catch (error) {
+    console.error('Error fetching public events:', error);
     return [];
   }
 }

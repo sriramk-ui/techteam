@@ -8,16 +8,16 @@ export const metadata: Metadata = {
   description: 'Explore the public projects built by TeamOS — spanning web apps, tools, and more.',
 };
 
+import { Project } from '@/models/Project';
+import connectToDatabase from '@/lib/db';
+
 async function getPublicProjects() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/projects/public`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.projects || [];
-  } catch {
+    await connectToDatabase();
+    const projects = await Project.find({ visibility: 'public' }).lean();
+    return JSON.parse(JSON.stringify(projects));
+  } catch (error) {
+    console.error('Error fetching public projects:', error);
     return [];
   }
 }
