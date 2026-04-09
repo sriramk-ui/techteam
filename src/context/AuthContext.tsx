@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Load from localStorage on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem('teamos_token');
+    const storedToken = localStorage.getItem('catalyst_token');
     if (storedToken) {
       setToken(storedToken);
       fetchMe(storedToken);
@@ -54,11 +54,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data = await res.json();
         setUser(data.user);
       } else {
-        localStorage.removeItem('teamos_token');
+        localStorage.removeItem('catalyst_token');
         setToken(null);
       }
     } catch {
-      localStorage.removeItem('teamos_token');
+      localStorage.removeItem('catalyst_token');
       setToken(null);
     } finally {
       setLoading(false);
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await res.json();
       if (!res.ok) return { success: false, error: data.message || 'Login failed' };
 
-      localStorage.setItem('teamos_token', data.token);
+      localStorage.setItem('catalyst_token', data.token);
       setToken(data.token);
       setUser(data.user);
       return { success: true };
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function logout() {
-    localStorage.removeItem('teamos_token');
+    localStorage.removeItem('catalyst_token');
     setToken(null);
     setUser(null);
     router.push('/login');

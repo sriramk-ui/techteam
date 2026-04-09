@@ -124,7 +124,7 @@ export async function GET() {
     for (const p of projectsToSeed) {
       const exists = await Project.findOne({ title: p.title });
       if (!exists) {
-        await Project.create(p);
+        await Project.create(p as any);
         results.push({ title: p.title, type: 'Project', status: 'Created' });
       }
     }
@@ -160,7 +160,7 @@ export async function GET() {
     for (const e of eventsToSeed) {
       const exists = await Event.findOne({ name: e.name });
       if (!exists) {
-        await Event.create(e);
+        await Event.create(e as any);
         results.push({ name: e.name, type: 'Event', status: 'Created' });
       }
     }

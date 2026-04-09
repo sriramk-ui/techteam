@@ -17,6 +17,7 @@ interface Project {
   progress: number;
   githubUrl?: string;
   demoUrl?: string;
+  projectUrl?: string;
   notes?: string;
   assignedMembers?: { _id: string; name: string }[];
 }
@@ -28,11 +29,11 @@ const emptyForm: {
   status: 'Planning' | 'Active' | 'Completed';
   visibility: 'public' | 'private';
   progress: number; githubUrl: string; demoUrl: string;
-  notes: string; assignedMembers: string[];
+  projectUrl: string; notes: string; assignedMembers: string[];
 } = {
   title: '', description: '', status: 'Planning',
   visibility: 'private', progress: 0,
-  githubUrl: '', demoUrl: '', notes: '', assignedMembers: [],
+  githubUrl: '', demoUrl: '', projectUrl: '', notes: '', assignedMembers: [],
 };
 
 const inputStyle: React.CSSProperties = {
@@ -83,7 +84,8 @@ export default function ProjectsManagerPage() {
       title: proj.title, description: proj.description,
       status: proj.status, visibility: proj.visibility,
       progress: proj.progress, githubUrl: proj.githubUrl || '',
-      demoUrl: proj.demoUrl || '', notes: proj.notes || '',
+      demoUrl: proj.demoUrl || '', projectUrl: proj.projectUrl || '',
+      notes: proj.notes || '',
       assignedMembers: (proj.assignedMembers || []).map(m => m._id),
     });
     setError('');
@@ -231,6 +233,10 @@ export default function ProjectsManagerPage() {
                   <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '5px' }}>Demo URL</label>
                   <input style={inputStyle} value={form.demoUrl} onChange={e => setForm(f => ({ ...f, demoUrl: e.target.value }))} placeholder="https://..." />
                 </div>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '5px' }}>Project URL (Hyperlink)</label>
+                <input style={inputStyle} value={form.projectUrl} onChange={e => setForm(f => ({ ...f, projectUrl: e.target.value }))} placeholder="https://yourproject.com — makes the title a clickable link" />
               </div>
               <div>
                 <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '5px' }}>Notes (internal)</label>

@@ -4,17 +4,23 @@ import { Code2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Projects | TeamOS',
-  description: 'Explore the public projects built by TeamOS — spanning web apps, tools, and more.',
+  title: 'Projects | Catalyst OS',
+  description: 'Explore the public projects built by Catalyst OS — spanning web apps, tools, and more.',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { Project } from '@/models/Project';
+import { User } from '@/models/User';
 import connectToDatabase from '@/lib/db';
 
 async function getPublicProjects() {
   try {
     await connectToDatabase();
-    const projects = await Project.find({ visibility: 'public' }).lean();
+    // Populate assignedMembers to filter out deleted users (dangling ObjectIDs)
+    // This perfectly matches the logic used in the Dashboard's /api/projects route
+    const projects = await Project.find({ visibility: 'public' }).populate('assignedMembers', '_id name').lean();
     return JSON.parse(JSON.stringify(projects));
   } catch (error) {
     console.error('Error fetching public projects:', error);

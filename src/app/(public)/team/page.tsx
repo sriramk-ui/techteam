@@ -4,9 +4,12 @@ import MemberCard from '@/components/MemberCard';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Meet the Team | TeamOS',
-  description: 'Get to know the talented individuals behind TeamOS — developers, designers, and problem-solvers.',
+  title: 'Meet the Team | Catalyst OS',
+  description: 'Get to know the talented individuals behind Catalyst OS — developers, designers, and problem-solvers.',
 };
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 import { User } from '@/models/User';
 import connectToDatabase from '@/lib/db';

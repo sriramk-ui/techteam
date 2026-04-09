@@ -104,6 +104,14 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
           .mobile-overlay.open {
             display: block;
           }
+          .hide-desktop {
+            display: flex;
+          }
+          @media (min-width: 769px) {
+            .hide-desktop {
+              display: none !important;
+            }
+          }
         }
       `}</style>
 
@@ -118,7 +126,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             <Zap size={14} color="white" fill="white" />
           </div>
           <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>
-            Team<span style={{ color: 'var(--accent-primary)' }}>OS</span>
+            Catalyst <span style={{ color: 'var(--accent-primary)' }}>OS</span>
           </span>
         </Link>
         <button 
@@ -149,13 +157,14 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
               <Zap size={14} color="white" fill="white" />
             </div>
             <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>
-              Team<span style={{ color: 'var(--accent-primary)' }}>OS</span>
+              Catalyst <span style={{ color: 'var(--accent-primary)' }}>OS</span>
             </span>
           </Link>
           {mobileMenuOpen && (
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '6px', borderRadius: '6px', display: 'flex', '@media (min-width: 769px)': { display: 'none' } as any }}
+              className="hide-desktop"
+              style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '6px', borderRadius: '6px' }}
             >
               <X size={16} />
             </button>

@@ -3,9 +3,12 @@ import { Trophy } from 'lucide-react';
 import EventCard from '@/components/EventCard';
 
 export const metadata: Metadata = {
-  title: 'Events | TeamOS',
+  title: 'Events | Catalyst OS',
   description: 'Hackathons, workshops, and competitions we have participated in.',
 };
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 import { Event } from '@/models/Event';
 import connectToDatabase from '@/lib/db';

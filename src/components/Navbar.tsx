@@ -50,7 +50,7 @@ export default function Navbar() {
             <Zap size={16} color="white" fill="white" />
           </div>
           <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Team<span style={{ color: 'var(--accent-primary)' }}>OS</span>
+            Catalyst <span style={{ color: 'var(--accent-primary)' }}>OS</span>
           </span>
         </Link>
 

@@ -8,6 +8,7 @@ export interface IProject extends Document {
   progress: number;
   githubUrl?: string;
   demoUrl?: string;
+  projectUrl?: string;
   assignedMembers: mongoose.Types.ObjectId[];
   notes?: string;
   createdAt: Date;
@@ -23,6 +24,7 @@ const ProjectSchema: Schema = new Schema(
     progress: { type: Number, default: 0, min: 0, max: 100 },
     githubUrl: { type: String },
     demoUrl: { type: String },
+    projectUrl: { type: String },
     assignedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     notes: { type: String },
   },

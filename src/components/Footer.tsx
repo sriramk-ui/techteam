@@ -26,11 +26,14 @@ export default function Footer() {
                 <Zap size={16} color="white" fill="white" />
               </div>
               <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1.05rem' }}>
-                Team<span style={{ color: 'var(--accent-primary)' }}>OS</span>
+                Catalyst <span style={{ color: 'var(--accent-primary)' }}>OS</span>
               </span>
             </Link>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.7, maxWidth: '260px' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.7, maxWidth: '260px', marginBottom: '0.5rem' }}>
               A team that ships. We build, compete, and push boundaries across every challenge we take on.
+            </p>
+            <p style={{ color: 'var(--accent-primary)', fontSize: '0.75rem', fontStyle: 'italic', opacity: 0.8 }}>
+              "triggers change without sounding violent"
             </p>
           </div>
 
@@ -71,7 +74,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-subtle)' }}>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-            © {new Date().getFullYear()} TeamOS. Built with purpose.
+            © {new Date().getFullYear()} Catalyst OS. finally by <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>tech team</span>
           </p>
           <div style={{ display: 'flex', gap: '12px' }}>
             {[

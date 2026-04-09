@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, Users, CheckCircle, Clock, Loader, Shield } from 'lucide-react';
+import { ExternalLink, Users, CheckCircle, Clock, Loader, Shield, Link2 } from 'lucide-react';
 import { GithubIcon } from '@/components/icons';
 
 interface ProjectCardProps {
@@ -12,6 +12,7 @@ interface ProjectCardProps {
     progress: number;
     githubUrl?: string;
     demoUrl?: string;
+    projectUrl?: string;
     assignedMembers?: { _id: string; name: string }[];
     visibility?: 'public' | 'private';
   };
@@ -46,7 +47,19 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
       {/* Top row */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem' }}>
         <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.15, flex: 1 }}>
-          {project.title}
+          {project.projectUrl ? (
+            <a
+              href={project.projectUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="proj-title-link"
+            >
+              {project.title}
+              <Link2 size={12} style={{ marginLeft: '5px', opacity: 0.6, flexShrink: 0 }} />
+            </a>
+          ) : (
+            project.title
+          )}
         </h3>
         <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
           {showVisibility && (
@@ -113,6 +126,11 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
           )}
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
+          {project.projectUrl && (
+            <a href={project.projectUrl} target="_blank" rel="noopener noreferrer" title="Visit Project" className="proj-link-btn">
+              <Link2 size={14} />
+            </a>
+          )}
           {project.githubUrl && (
             <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" title="GitHub" className="proj-github-btn">
               <GithubIcon size={14} />
@@ -133,6 +151,23 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
         .project-card:hover {
           transform: translateY(-3px);
           box-shadow: 0 16px 50px rgba(0,0,0,0.4), 0 0 30px rgba(139,92,246,0.12);
+        }
+        .proj-title-link {
+          display: inline-flex; align-items: center;
+          color: var(--text-primary); text-decoration: none;
+          transition: color 0.2s;
+        }
+        .proj-title-link:hover {
+          color: #a78bfa;
+        }
+        .proj-link-btn {
+          width: 30px; height: 30px; border-radius: 7px;
+          background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
+          display: flex; align-items: center; justify-content: center;
+          color: #67e8f9; text-decoration: none; transition: all 0.2s;
+        }
+        .proj-link-btn:hover {
+          background: rgba(6,182,212,0.18); border-color: rgba(6,182,212,0.5);
         }
         .proj-github-btn {
           width: 30px; height: 30px; border-radius: 7px;

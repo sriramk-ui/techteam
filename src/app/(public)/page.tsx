@@ -52,10 +52,17 @@ export default function LandingPage() {
 
           <p style={{
             fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: 1.8,
-            maxWidth: '600px', margin: '0 auto 2.5rem',
+            maxWidth: '600px', margin: '0 auto 1rem',
             animation: 'fadeInUp 0.7s ease-out',
           }}>
             A full-stack development team that turns ideas into impactful software. Explore our work, meet the team, and see what we&apos;ve been competing in.
+          </p>
+          <p style={{
+            fontSize: '0.875rem', color: 'var(--accent-primary)', fontStyle: 'italic',
+            opacity: 0.6, marginBottom: '2.5rem',
+            animation: 'fadeInUp 0.75s ease-out',
+          }}>
+            "triggers change without sounding violent"
           </p>
 
           {/* CTAs */}

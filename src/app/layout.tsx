@@ -3,8 +3,8 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
-  title: "Team | We Build, We Compete, We Deliver",
-  description: "A dual-mode portfolio and internal team management platform. Explore our projects, events, and team members.",
+  title: "Catalyst OS | We Build, We Compete, We Deliver",
+  description: "A dual-mode portfolio and internal management platform that triggers change. Explore our projects, events, and team members.",
 };
 
 export default function RootLayout({
