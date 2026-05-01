@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, Users, CheckCircle, Clock, Loader, Shield, Link2 } from 'lucide-react';
+import { ExternalLink, Users, CheckCircle, Clock, Loader, Shield, Link2, ArrowUpRight } from 'lucide-react';
 import { GithubIcon } from '@/components/icons';
 
 interface ProjectCardProps {
@@ -29,6 +29,9 @@ const statusConfig = {
 export default function ProjectCard({ project, showVisibility = false, onVaultClick }: ProjectCardProps) {
   const status = statusConfig[project.status];
   const StatusIcon = status.Icon;
+  
+  // Decide the main link for the "whole card click"
+  const mainUrl = project.projectUrl || project.demoUrl || project.githubUrl;
 
   return (
     <div
@@ -42,24 +45,25 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
         gap: '1rem',
         position: 'relative',
         overflow: 'hidden',
+        minHeight: '220px',
       }}
     >
+      {/* Ghost link for whole card clickability */}
+      {mainUrl && (
+        <a 
+          href={mainUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="card-ghost-link"
+          title={`Visit ${project.title}`}
+        />
+      )}
+
       {/* Top row */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem' }}>
-        <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.15, flex: 1 }}>
-          {project.projectUrl ? (
-            <a
-              href={project.projectUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="proj-title-link"
-            >
-              {project.title}
-              <Link2 size={12} style={{ marginLeft: '5px', opacity: 0.6, flexShrink: 0 }} />
-            </a>
-          ) : (
-            project.title
-          )}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', position: 'relative', zIndex: 2, pointerEvents: 'none' }}>
+        <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.15, flex: 1, display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {project.title}
+          {mainUrl && <ArrowUpRight size={14} className="title-arrow" style={{ opacity: 0, transition: 'all 0.3s' }} />}
         </h3>
         <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
           {showVisibility && (
@@ -85,12 +89,23 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
       </div>
 
       {/* Description */}
-      <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+      <p style={{ 
+        color: 'var(--text-secondary)', 
+        fontSize: '0.875rem', 
+        lineHeight: 1.6, 
+        display: '-webkit-box', 
+        WebkitLineClamp: 2, 
+        WebkitBoxOrient: 'vertical', 
+        overflow: 'hidden',
+        position: 'relative',
+        zIndex: 2,
+        pointerEvents: 'none'
+      }}>
         {project.description}
       </p>
 
       {/* Progress Bar */}
-      <div>
+      <div style={{ position: 'relative', zIndex: 2, pointerEvents: 'none' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Progress</span>
           <span style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>{project.progress}%</span>
@@ -107,7 +122,7 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
       </div>
 
       {/* Members + Links */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', position: 'relative', zIndex: 3 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {project.assignedMembers && project.assignedMembers.length > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
@@ -117,7 +132,7 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
           )}
           {onVaultClick && (
             <button 
-              onClick={onVaultClick}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onVaultClick(); }}
               title="Project Vault"
               className="proj-vault-btn"
             >
@@ -125,19 +140,41 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
             </button>
           )}
         </div>
+        
         <div style={{ display: 'flex', gap: '8px' }}>
           {project.projectUrl && (
-            <a href={project.projectUrl} target="_blank" rel="noopener noreferrer" title="Visit Project" className="proj-link-btn">
+            <a 
+              href={project.projectUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              title="Visit Project" 
+              className="proj-link-btn"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Link2 size={14} />
             </a>
           )}
           {project.githubUrl && (
-            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" title="GitHub" className="proj-github-btn">
+            <a 
+              href={project.githubUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              title="GitHub" 
+              className="proj-github-btn"
+              onClick={(e) => e.stopPropagation()}
+            >
               <GithubIcon size={14} />
             </a>
           )}
           {project.demoUrl && (
-            <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" title="Live Demo" className="proj-demo-btn">
+            <a 
+              href={project.demoUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              title="Live Demo" 
+              className="proj-demo-btn"
+              onClick={(e) => e.stopPropagation()}
+            >
               <ExternalLink size={14} />
             </a>
           )}
@@ -146,57 +183,65 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
 
       <style>{`
         .project-card {
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         .project-card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 16px 50px rgba(0,0,0,0.4), 0 0 30px rgba(139,92,246,0.12);
+          transform: translateY(-5px);
+          box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(139,92,246,0.15);
+          border-color: rgba(139,92,246,0.4);
         }
-        .proj-title-link {
-          display: inline-flex; align-items: center;
-          color: var(--text-primary); text-decoration: none;
-          transition: color 0.2s;
+        .project-card:hover .title-arrow {
+          opacity: 1 !important;
+          transform: translate(2px, -2px);
+          color: var(--accent-primary);
         }
-        .proj-title-link:hover {
-          color: #a78bfa;
+        .card-ghost-link {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          cursor: pointer;
         }
         .proj-link-btn {
-          width: 30px; height: 30px; border-radius: 7px;
+          width: 32px; height: 32px; border-radius: 8px;
           background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
           display: flex; align-items: center; justify-content: center;
           color: #67e8f9; text-decoration: none; transition: all 0.2s;
         }
         .proj-link-btn:hover {
           background: rgba(6,182,212,0.18); border-color: rgba(6,182,212,0.5);
+          transform: scale(1.05);
         }
         .proj-github-btn {
-          width: 30px; height: 30px; border-radius: 7px;
+          width: 32px; height: 32px; border-radius: 8px;
           background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle);
           display: flex; align-items: center; justify-content: center;
           color: var(--text-muted); text-decoration: none; transition: all 0.2s;
         }
         .proj-github-btn:hover {
           color: white; border-color: rgba(255,255,255,0.2);
+          transform: scale(1.05);
         }
         .proj-demo-btn {
-          width: 30px; height: 30px; border-radius: 7px;
+          width: 32px; height: 32px; border-radius: 8px;
           background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3);
           display: flex; align-items: center; justify-content: center;
           color: var(--accent-primary); text-decoration: none; transition: all 0.2s;
         }
         .proj-demo-btn:hover {
           background: rgba(139,92,246,0.2);
+          transform: scale(1.05);
         }
         .proj-vault-btn {
           display: flex; align-items: center; gap: 5px;
-          padding: 4px 10px; border-radius: 6px;
+          padding: 5px 12px; border-radius: 8px;
           background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
-          color: #fca5a5; font-size: 0.72rem; font-weight: 600;
+          color: #fca5a5; font-size: 0.72rem; font-weight: 700;
           cursor: pointer; transition: all 0.2s;
         }
         .proj-vault-btn:hover {
           background: rgba(239,68,68,0.18);
           border-color: rgba(239,68,68,0.4);
+          transform: scale(1.02);
         }
       `}</style>
     </div>

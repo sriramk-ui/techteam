@@ -3,6 +3,7 @@ import connectToDatabase from '@/lib/db';
 import { User } from '@/models/User';
 import { getUserFromRequest } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(req: NextRequest) {
   try {
@@ -28,6 +29,8 @@ export async function POST(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(data.password, 12);
     const newUser = await User.create({ ...data, password: hashedPassword });
     const { password: _, ...userWithoutPassword } = newUser.toObject();
+    revalidatePath('/team');
+    revalidatePath('/');
     return NextResponse.json({ user: userWithoutPassword }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

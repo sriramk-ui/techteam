@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import { Event } from '@/models/Event';
 import { getUserFromRequest } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,6 +23,8 @@ export async function POST(req: NextRequest) {
     const data = await req.json();
     await connectToDatabase();
     const newEvent = await Event.create(data);
+    revalidatePath('/events');
+    revalidatePath('/');
     return NextResponse.json({ event: newEvent }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

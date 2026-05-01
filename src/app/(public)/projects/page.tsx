@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
-import ProjectCard from '@/components/ProjectCard';
-import { Code2, ArrowRight } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 import Link from 'next/link';
+import ProjectList from '@/components/ProjectList';
+import { Project } from '@/models/Project';
+import { User } from '@/models/User'; // Required for populate to work correctly
+import connectToDatabase from '@/lib/db';
 
 export const metadata: Metadata = {
   title: 'Projects | Catalyst OS',
@@ -11,24 +14,19 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { Project } from '@/models/Project';
-import { User } from '@/models/User';
-import connectToDatabase from '@/lib/db';
-
 async function getPublicProjects() {
   try {
     await connectToDatabase();
-    // Populate assignedMembers to filter out deleted users (dangling ObjectIDs)
-    // This perfectly matches the logic used in the Dashboard's /api/projects route
-    const projects = await Project.find({ visibility: 'public' }).populate('assignedMembers', '_id name').lean();
+    // Population requires the User model to be imported first
+    const projects = await Project.find({ visibility: 'public' })
+      .populate('assignedMembers', 'name') // Only need name for count or simple display
+      .lean();
     return JSON.parse(JSON.stringify(projects));
   } catch (error) {
     console.error('Error fetching public projects:', error);
     return [];
   }
 }
-
-const filterOptions = ['All', 'Planning', 'Active', 'Completed'];
 
 export default async function ProjectsPage() {
   const projects = await getPublicProjects();
@@ -56,28 +54,9 @@ export default async function ProjectsPage() {
           </p>
         </div>
 
-        {/* Status filter pills (visual only, SSR page) */}
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
-          {filterOptions.map((f) => (
-            <span key={f} style={{
-              padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600,
-              background: f === 'All' ? 'rgba(139,92,246,0.15)' : 'rgba(255,255,255,0.04)',
-              border: f === 'All' ? '1px solid rgba(139,92,246,0.4)' : '1px solid var(--border-subtle)',
-              color: f === 'All' ? '#c4b5fd' : 'var(--text-muted)',
-              cursor: 'pointer',
-            }}>
-              {f}
-            </span>
-          ))}
-        </div>
-
-        {/* Grid */}
+        {/* Dynamic Project List with Functional Filters */}
         {projects.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
-            {projects.map((project: Parameters<typeof ProjectCard>[0]['project']) => (
-              <ProjectCard key={project._id} project={project} />
-            ))}
-          </div>
+          <ProjectList initialProjects={projects} />
         ) : (
           <div style={{ textAlign: 'center', padding: '5rem 0', color: 'var(--text-muted)' }}>
             <Code2 size={40} style={{ marginBottom: '1rem', opacity: 0.3 }} />

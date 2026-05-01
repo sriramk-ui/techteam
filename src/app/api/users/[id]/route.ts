@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import { User } from '@/models/User';
 import { getUserFromRequest } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -39,6 +40,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     await connectToDatabase();
     const updated = await User.findByIdAndUpdate(id, data, { new: true }).select('-password');
     if (!updated) return NextResponse.json({ message: 'Not found' }, { status: 404 });
+    revalidatePath('/team');
+    revalidatePath('/');
     return NextResponse.json({ user: updated }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
@@ -55,6 +58,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     await connectToDatabase();
     const deleted = await User.findByIdAndDelete(id);
     if (!deleted) return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    revalidatePath('/team');
+    revalidatePath('/');
     return NextResponse.json({ message: 'User deleted successfully' }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

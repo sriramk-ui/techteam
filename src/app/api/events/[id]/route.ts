@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import { Event } from '@/models/Event';
 import { getUserFromRequest } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -26,6 +27,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     await connectToDatabase();
     const event = await Event.findByIdAndUpdate(id, data, { new: true });
     if (!event) return NextResponse.json({ message: 'Event not found' }, { status: 404 });
+    revalidatePath('/events');
+    revalidatePath('/');
     return NextResponse.json({ event }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
@@ -42,6 +45,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     await connectToDatabase();
     const event = await Event.findByIdAndDelete(id);
     if (!event) return NextResponse.json({ message: 'Event not found' }, { status: 404 });
+    revalidatePath('/events');
+    revalidatePath('/');
     return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

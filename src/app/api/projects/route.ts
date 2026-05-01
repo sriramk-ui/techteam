@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import { Project } from '@/models/Project';
 import { getUserFromRequest } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(req: NextRequest) {
   try {
@@ -36,6 +37,8 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
     
     const newProject = await Project.create(data);
+    revalidatePath('/projects');
+    revalidatePath('/');
     return NextResponse.json({ message: 'Project created', project: newProject }, { status: 201 });
   } catch (error) {
     console.error('Create project error', error);

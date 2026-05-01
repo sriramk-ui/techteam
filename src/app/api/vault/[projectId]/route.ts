@@ -1,15 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import { Vault } from '@/models/Vault';
+import { Project } from '@/models/Project'; // Import Project to prevent MissingSchemaError on populate
 import { getUserFromRequest } from '@/lib/auth';
 import crypto from 'crypto';
 
 const VAULT_SECRET = process.env.VAULT_SECRET || 'vault-secret-32-chars-long-key!!';
 const IV_LENGTH = 16;
 
+function getVaultKey(): Buffer {
+  let key = Buffer.from(VAULT_SECRET, 'utf8');
+  if (key.length >= 32) return key.slice(0, 32);
+  const padded = Buffer.alloc(32);
+  key.copy(padded);
+  return padded;
+}
+
 function encrypt(text: string): string {
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(VAULT_SECRET, 'utf8').slice(0, 32), iv);
+  const cipher = crypto.createCipheriv('aes-256-cbc', getVaultKey(), iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return iv.toString('hex') + ':' + encrypted.toString('hex');
@@ -19,7 +28,7 @@ function decrypt(text: string): string {
   const [ivHex, encryptedHex] = text.split(':');
   const iv = Buffer.from(ivHex, 'hex');
   const encrypted = Buffer.from(encryptedHex, 'hex');
-  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(VAULT_SECRET, 'utf8').slice(0, 32), iv);
+  const decipher = crypto.createDecipheriv('aes-256-cbc', getVaultKey(), iv);
   let decrypted = decipher.update(encrypted);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
