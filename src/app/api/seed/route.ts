@@ -86,15 +86,6 @@ export async function GET() {
 
     const projectsToSeed = [
       {
-        title: 'AgroMind Detection',
-        description: 'AI-powered crop disease detection and automated mitigation system using high-resolution spectral imagery.',
-        status: 'Active',
-        visibility: 'public',
-        progress: 65,
-        githubUrl: 'https://github.com/sriramk-ui/agromind',
-        assignedMembers: assignedIds
-      },
-      {
         title: 'Loopy Admin Portal',
         description: 'A sophisticated enterprise-grade management system designed for scale, featuring real-time analytics and RBAC.',
         status: 'Completed',
