@@ -91,7 +91,7 @@ export async function GET() {
         status: 'Active',
         visibility: 'public',
         progress: 65,
-        githubUrl: 'https://github.com/techteam/agromind',
+        githubUrl: 'https://github.com/sriramk-ui/agromind',
         assignedMembers: assignedIds
       },
       {
