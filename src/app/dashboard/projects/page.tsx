@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import ProjectCard from '@/components/ProjectCard';
-import VaultEditor from '@/components/VaultEditor';
+import ProjectCard from '@/components/molecules/ProjectCard';
+import VaultEditor from '@/components/organisms/VaultEditor';
 import {
   Plus, X, FolderGit2, Save, Trash2, Edit2,
 } from 'lucide-react';

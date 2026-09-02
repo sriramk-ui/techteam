@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Code2 } from 'lucide-react';
-import ProjectCard from './ProjectCard';
+import ProjectCard from '@/components/molecules/ProjectCard';
 
 interface ProjectListProps {
   initialProjects: any[];

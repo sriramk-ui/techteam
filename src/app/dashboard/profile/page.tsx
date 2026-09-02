@@ -7,7 +7,7 @@ import {
   Camera, ExternalLink, Globe, Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GithubIcon, LinkedinIcon, InstagramIcon } from '@/components/icons';
+import { GithubIcon, LinkedinIcon, InstagramIcon } from '@/components/atoms/icons';
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '14px 16px', borderRadius: '12px',

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Zap, LogIn, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, Zap, LogIn, AlertCircle, ArrowLeft } from 'lucide-react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 
 function LoginForm() {
@@ -52,6 +52,20 @@ function LoginForm() {
       <div className="orb" style={{ width: '400px', height: '400px', background: '#06b6d4', bottom: '-50px', right: '-50px' }} />
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '420px' }}>
+        {/* Top Back Link */}
+        <div style={{ marginBottom: '1rem' }}>
+          <Link href="/" style={{
+            display: 'inline-flex', alignItems: 'center', gap: '6px',
+            color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.85rem',
+            transition: 'color 0.2s',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text-primary)')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+          >
+            <ArrowLeft size={15} /> Back to Team Portfolio
+          </Link>
+        </div>
+
         {/* Card */}
         <div className="glass-strong glow-border" style={{ borderRadius: 'var(--radius-xl)', padding: '2.5rem' }}>
           {/* Logo */}

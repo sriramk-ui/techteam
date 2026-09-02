@@ -1,23 +1,21 @@
 import { Users, ArrowRight } from 'lucide-react';
 import type { Metadata } from 'next';
-import MemberCard from '@/components/MemberCard';
+import MemberCard from '@/components/molecules/MemberCard';
 import Link from 'next/link';
+import { User } from '@/models/User';
+import connectToDatabase from '@/lib/db';
 
 export const metadata: Metadata = {
-  title: 'Meet the Team | Catalyst OS',
-  description: 'Get to know the talented individuals behind Catalyst OS — developers, designers, and problem-solvers.',
+  title: 'Meet the Team | Innovation Collaboration',
+  description: 'Get to know the talented individuals behind Innovation Collaboration — developers, designers, and problem-solvers.',
 };
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { User } from '@/models/User';
-import connectToDatabase from '@/lib/db';
-
 async function getTeamMembers() {
   try {
     await connectToDatabase();
-    // Return Lean objects for plain JSON serialization
     const users = await User.find({}).select('name role profilePic socialLinks').lean();
     return JSON.parse(JSON.stringify(users));
   } catch (error) {
@@ -30,31 +28,32 @@ export default async function TeamPage() {
   const members = await getTeamMembers();
 
   return (
-    <div style={{ minHeight: '80vh', position: 'relative' }}>
-      <div className="orb" style={{ width: '400px', height: '400px', background: '#8b5cf6', top: 0, right: '10%', zIndex: 0 }} />
+    <div style={{ minHeight: '80vh', position: 'relative', paddingBottom: '6rem' }}>
+      <div className="orb" style={{ width: '450px', height: '450px', background: '#EC170F', top: 0, right: '10%', zIndex: 0 }} />
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 1.5rem 6rem', position: 'relative', zIndex: 1 }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 1.5rem 2rem', position: 'relative', zIndex: 1 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
-            padding: '5px 14px', borderRadius: '20px',
-            background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.3)',
-            color: '#c4b5fd', fontSize: '0.8rem', fontWeight: 600, marginBottom: '1.25rem',
+            padding: '6px 16px', borderRadius: '20px',
+            background: 'rgba(236, 23, 15, 0.08)', border: '1px solid rgba(236, 23, 15, 0.3)',
+            color: '#EC170F', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1.25rem',
+            letterSpacing: '0.05em',
           }}>
-            <Users size={13} /> {members.length} Members
+            <Users size={14} /> {members.length} TEAM MEMBERS
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
-            The <span className="gradient-text">People</span> Behind the Work
+          <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
+            The <span className="gradient-text">People</span> Behind Innovation Collaboration
           </h1>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto', lineHeight: 1.7 }}>
-            A team of passionate engineers, designers, and builders who love creating things that matter.
+          <p style={{ color: 'var(--text-secondary)', maxWidth: '540px', margin: '0 auto', lineHeight: 1.7, fontWeight: 500 }}>
+            Click on any member card to view their custom developer portfolio profile, skills, and shipped projects.
           </p>
         </div>
 
         {/* Grid */}
         {members.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
             {members.map((member: any) => (
               <MemberCard key={member._id} member={member} />
             ))}
@@ -77,7 +76,7 @@ export default async function TeamPage() {
       <style>{`
         .team-projects-link {
           display: inline-flex; align-items: center; gap: 8px;
-          color: var(--accent-primary); text-decoration: none; fontWeight: 600;
+          color: #EC170F; text-decoration: none; font-weight: 700;
           transition: gap 0.2s;
         }
         .team-projects-link:hover { gap: 12px; }

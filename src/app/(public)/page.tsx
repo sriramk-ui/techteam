@@ -2,47 +2,71 @@ import connectToDatabase from '@/lib/db';
 import { Project } from '@/models/Project';
 import { Event } from '@/models/Event';
 import { User } from '@/models/User';
-import LandingPageClient from '@/components/LandingPageClient';
+import LandingPageClient from '@/components/templates/LandingPageClient';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-async function getStats() {
+async function getPortfolioData() {
   try {
     await connectToDatabase();
     
-    // Count public projects
+    // Fetch stats
     const projectsCount = await Project.countDocuments({ visibility: 'public' });
-    
-    // Count all events
     const eventsCount = await Event.countDocuments({});
-    
-    // Count all users (team members)
     const membersCount = await User.countDocuments({});
     
+    // Fetch top public projects (up to 6 for showcase)
+    const rawProjects = await Project.find({ visibility: 'public' })
+      .populate('assignedMembers', 'name')
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .lean();
+      
+    // Fetch team members (up to 8 for showcase)
+    const rawMembers = await User.find({})
+      .select('name role profilePic socialLinks')
+      .limit(8)
+      .lean();
+
+    // Fetch recent events (up to 3 for showcase)
+    const rawEvents = await Event.find({})
+      .populate('assignedMembers', 'name')
+      .sort({ date: -1 })
+      .limit(3)
+      .lean();
+    
     return {
-      projectsCount,
-      eventsCount,
-      membersCount
+      stats: {
+        projectsCount,
+        eventsCount,
+        membersCount,
+      },
+      featuredProjects: JSON.parse(JSON.stringify(rawProjects)),
+      teamMembers: JSON.parse(JSON.stringify(rawMembers)),
+      recentEvents: JSON.parse(JSON.stringify(rawEvents)),
     };
   } catch (error) {
-    console.error('Error fetching home stats:', error);
+    console.error('Error fetching portfolio data:', error);
     return {
-      projectsCount: 0,
-      eventsCount: 0,
-      membersCount: 0
+      stats: { projectsCount: 0, eventsCount: 0, membersCount: 0 },
+      featuredProjects: [],
+      teamMembers: [],
+      recentEvents: [],
     };
   }
 }
 
 export default async function LandingPage() {
-  const { projectsCount, eventsCount, membersCount } = await getStats();
+  const { stats, featuredProjects, teamMembers, recentEvents } = await getPortfolioData();
 
   return (
     <LandingPageClient 
-      projectsCount={projectsCount}
-      eventsCount={eventsCount}
-      membersCount={membersCount}
+      stats={stats}
+      featuredProjects={featuredProjects}
+      teamMembers={teamMembers}
+      recentEvents={recentEvents}
     />
   );
 }
+

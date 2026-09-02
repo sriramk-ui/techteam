@@ -75,17 +75,34 @@ export default function EventCard({ event }: EventCardProps) {
           )}
         </div>
 
-        {event.result && (
-          <div style={{
-            padding: '8px 12px', borderRadius: '8px',
-            background: 'rgba(16,185,129,0.08)',
-            border: '1px solid rgba(16,185,129,0.25)',
-            fontSize: '0.8rem', color: '#6ee7b7',
-            display: 'flex', alignItems: 'center', gap: '6px',
-          }}>
-            <Trophy size={11} /> {event.result}
-          </div>
-        )}
+        {event.result && (() => {
+          const resLower = event.result.toLowerCase();
+          let badgeStyle = {
+            bg: 'rgba(16, 185, 129, 0.12)',
+            border: 'rgba(16, 185, 129, 0.4)',
+            color: '#10b981',
+            icon: '🏆',
+          };
+          if (resLower.includes('1st') || resLower.includes('winner') || resLower.includes('first')) {
+            badgeStyle = { bg: 'rgba(245, 158, 11, 0.14)', border: 'rgba(245, 158, 11, 0.5)', color: '#f59e0b', icon: '🥇' };
+          } else if (resLower.includes('2nd') || resLower.includes('runner') || resLower.includes('second')) {
+            badgeStyle = { bg: 'rgba(148, 163, 184, 0.14)', border: 'rgba(148, 163, 184, 0.5)', color: '#cbd5e1', icon: '🥈' };
+          } else if (resLower.includes('3rd') || resLower.includes('third')) {
+            badgeStyle = { bg: 'rgba(217, 119, 6, 0.14)', border: 'rgba(217, 119, 6, 0.5)', color: '#f97316', icon: '🥉' };
+          }
+
+          return (
+            <div style={{
+              padding: '8px 12px', borderRadius: '8px',
+              background: badgeStyle.bg,
+              border: `1px solid ${badgeStyle.border}`,
+              fontSize: '0.82rem', fontWeight: 700, color: badgeStyle.color,
+              display: 'flex', alignItems: 'center', gap: '6px',
+            }}>
+              <span>{badgeStyle.icon}</span> {event.result}
+            </div>
+          );
+        })()}
       </div>
 
       <style>{`

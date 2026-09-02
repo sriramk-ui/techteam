@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
-import PageTransition from '@/components/PageTransition';
+import PageTransition from '@/components/atoms/PageTransition';
 import {
   LayoutDashboard, FolderGit2, Calendar, Shield, Users,
   LogOut, Zap, ChevronRight, User, Menu, X,
@@ -126,7 +126,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             <Zap size={14} color="white" fill="white" />
           </div>
           <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>
-            Catalyst <span style={{ color: 'var(--accent-primary)' }}>OS</span>
+            Innovation <span style={{ color: 'var(--accent-primary)' }}>Collaboration</span>
           </span>
         </Link>
         <button 
@@ -157,7 +157,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
               <Zap size={14} color="white" fill="white" />
             </div>
             <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>
-              Catalyst <span style={{ color: 'var(--accent-primary)' }}>OS</span>
+              Innovation <span style={{ color: 'var(--accent-primary)' }}>Collaboration</span>
             </span>
           </Link>
           {mobileMenuOpen && (

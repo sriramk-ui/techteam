@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import MemberCard from '@/components/MemberCard';
+import MemberCard from '@/components/molecules/MemberCard';
 import { Users, UserPlus, X, Save, Trash2, Edit2 } from 'lucide-react';
 
 interface Member {

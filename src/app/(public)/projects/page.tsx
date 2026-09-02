@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { Code2 } from 'lucide-react';
 import Link from 'next/link';
-import ProjectList from '@/components/ProjectList';
+import ProjectList from '@/components/organisms/ProjectList';
 import { Project } from '@/models/Project';
 import { User } from '@/models/User'; // Required for populate to work correctly
 import connectToDatabase from '@/lib/db';
 
 export const metadata: Metadata = {
-  title: 'Projects | Catalyst OS',
-  description: 'Explore the public projects built by Catalyst OS — spanning web apps, tools, and more.',
+  title: 'Projects | Innovation Collaboration',
+  description: 'Explore the public projects built by Innovation Collaboration — spanning web apps, tools, and more.',
 };
 
 export const dynamic = 'force-dynamic';

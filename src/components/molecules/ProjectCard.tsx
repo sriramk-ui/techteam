@@ -1,7 +1,7 @@
 'use client';
 
 import { ExternalLink, Users, CheckCircle, Clock, Loader, Shield, Link2, ArrowUpRight } from 'lucide-react';
-import { GithubIcon } from '@/components/icons';
+import { GithubIcon } from '@/components/atoms/icons';
 
 interface ProjectCardProps {
   project: {
@@ -115,7 +115,7 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
             height: '100%',
             width: `${project.progress}%`,
             borderRadius: '2px',
-            background: `linear-gradient(90deg, #8b5cf6, #06b6d4)`,
+            background: `linear-gradient(90deg, #EC170F, #0B3B9B)`,
             transition: 'width 1s ease',
           }} />
         </div>
@@ -187,13 +187,13 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
         }
         .project-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(139,92,246,0.15);
-          border-color: rgba(139,92,246,0.4);
+          box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(236,23,15,0.2);
+          border-color: rgba(236,23,15,0.5);
         }
         .project-card:hover .title-arrow {
           opacity: 1 !important;
           transform: translate(2px, -2px);
-          color: var(--accent-primary);
+          color: #EC170F;
         }
         .card-ghost-link {
           position: absolute;
@@ -203,12 +203,12 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
         }
         .proj-link-btn {
           width: 32px; height: 32px; border-radius: 8px;
-          background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
+          background: rgba(11,59,155,0.2); border: 1px solid rgba(11,59,155,0.4);
           display: flex; align-items: center; justify-content: center;
-          color: #67e8f9; text-decoration: none; transition: all 0.2s;
+          color: #FDFDFD; text-decoration: none; transition: all 0.2s;
         }
         .proj-link-btn:hover {
-          background: rgba(6,182,212,0.18); border-color: rgba(6,182,212,0.5);
+          background: rgba(11,59,155,0.4); border-color: #EC170F;
           transform: scale(1.05);
         }
         .proj-github-btn {
@@ -223,12 +223,12 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
         }
         .proj-demo-btn {
           width: 32px; height: 32px; border-radius: 8px;
-          background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3);
+          background: rgba(236,23,15,0.12); border: 1px solid rgba(236,23,15,0.35);
           display: flex; align-items: center; justify-content: center;
-          color: var(--accent-primary); text-decoration: none; transition: all 0.2s;
+          color: #EC170F; text-decoration: none; transition: all 0.2s;
         }
         .proj-demo-btn:hover {
-          background: rgba(139,92,246,0.2);
+          background: rgba(236,23,15,0.25);
           transform: scale(1.05);
         }
         .proj-vault-btn {

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Trophy } from 'lucide-react';
-import EventCard from '@/components/EventCard';
+import EventCard from '@/components/molecules/EventCard';
 
 export const metadata: Metadata = {
-  title: 'Events | Catalyst OS',
+  title: 'Events | Innovation Collaboration',
   description: 'Hackathons, workshops, and competitions we have participated in.',
 };
 

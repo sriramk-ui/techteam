@@ -1,6 +1,6 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import PageTransition from '@/components/PageTransition';
+import Navbar from '@/components/organisms/Navbar';
+import Footer from '@/components/organisms/Footer';
+import PageTransition from '@/components/atoms/PageTransition';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
