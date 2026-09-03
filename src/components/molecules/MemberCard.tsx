@@ -42,13 +42,15 @@ export default function MemberCard({ member }: MemberCardProps) {
       style={{
         background: 'var(--bg-card)',
         borderRadius: 'var(--radius-lg)',
-        padding: '1.75rem',
+        padding: '1.75rem 1.25rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden',
+        height: '290px',
+        justifyContent: 'space-between',
       }}
     >
       {/* Whole Card Click Ghost Link to Member Portfolio */}
@@ -65,7 +67,7 @@ export default function MemberCard({ member }: MemberCardProps) {
           alt={member.name}
           style={{
             width: '80px', height: '80px', borderRadius: '50%',
-            objectFit: 'cover', marginBottom: '1rem', flexShrink: 0,
+            objectFit: 'cover', marginBottom: '0.75rem', flexShrink: 0,
             boxShadow: `0 0 25px rgba(236,23,15,0.25)`,
             border: `3px solid #EC170F`,
             position: 'relative', zIndex: 2, pointerEvents: 'none',
@@ -77,7 +79,7 @@ export default function MemberCard({ member }: MemberCardProps) {
           background: `linear-gradient(135deg, hsl(${hue},70%,50%), hsl(${(hue + 60) % 360},70%,50%))`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: '1.5rem', fontWeight: 800, color: 'white',
-          marginBottom: '1rem',
+          marginBottom: '0.75rem',
           boxShadow: `0 0 25px rgba(236,23,15,0.25)`,
           border: `3px solid #EC170F`,
           flexShrink: 0,
@@ -88,7 +90,12 @@ export default function MemberCard({ member }: MemberCardProps) {
       )}
 
       {/* Name */}
-      <h3 style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.4rem', position: 'relative', zIndex: 2, pointerEvents: 'none' }}>
+      <h3 style={{
+        fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)',
+        marginBottom: '0.3rem', position: 'relative', zIndex: 2, pointerEvents: 'none',
+        display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
+        overflow: 'hidden', textOverflow: 'ellipsis', height: '1.4rem', margin: '0 0 0.3rem 0',
+      }}>
         {member.name}
       </h3>
 
@@ -104,35 +111,33 @@ export default function MemberCard({ member }: MemberCardProps) {
         background: roleStyle.bg,
         border: `1px solid ${roleStyle.border}`,
         color: roleStyle.color,
-        marginBottom: '1.25rem',
+        marginBottom: '0.75rem',
         position: 'relative', zIndex: 2, pointerEvents: 'none',
       }}>
         {roleStyle.label}
       </span>
 
       {/* Social Links */}
-      {member.socialLinks && (
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', position: 'relative', zIndex: 3, marginBottom: '1.25rem' }}>
-          {socialIcons.map(({ key, Icon, color }) => {
-            const url = member.socialLinks?.[key as keyof typeof member.socialLinks];
-            if (!url) return null;
-            const href = key === 'gmail' ? `mailto:${url}` : url;
-            return (
-              <a
-                key={key}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={key}
-                className="social-btn"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Icon size={14} />
-              </a>
-            );
-          })}
-        </div>
-      )}
+      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', position: 'relative', zIndex: 3, height: '32px', marginBottom: '0.5rem' }}>
+        {member.socialLinks && socialIcons.map(({ key, Icon }) => {
+          const url = member.socialLinks?.[key as keyof typeof member.socialLinks];
+          if (!url) return null;
+          const href = key === 'gmail' ? `mailto:${url}` : url;
+          return (
+            <a
+              key={key}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={key}
+              className="social-btn"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Icon size={14} />
+            </a>
+          );
+        })}
+      </div>
 
       {/* View Portfolio Button */}
       <div style={{ marginTop: 'auto', position: 'relative', zIndex: 2, pointerEvents: 'none' }}>

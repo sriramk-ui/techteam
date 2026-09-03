@@ -31,6 +31,9 @@ export default function EventCard({ event }: EventCardProps) {
       borderRadius: 'var(--radius-lg)',
       overflow: 'hidden',
       position: 'relative' as const,
+      display: 'flex',
+      flexDirection: 'column',
+      height: '310px',
     }}>
       {/* Image slot */}
       <div style={{
@@ -40,6 +43,7 @@ export default function EventCard({ event }: EventCardProps) {
         borderBottom: '1px solid var(--border-subtle)',
         position: 'relative',
         overflow: 'hidden',
+        flexShrink: 0,
       }}>
         {event.images && event.images.length > 0 ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -59,12 +63,17 @@ export default function EventCard({ event }: EventCardProps) {
         </span>
       </div>
 
-      <div style={{ padding: '1.25rem' }}>
-        <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.75rem', lineHeight: 1.3 }}>
+      <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+        <h3 style={{
+          fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)',
+          lineHeight: 1.3, height: '2.6rem',
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+          overflow: 'hidden', textOverflow: 'ellipsis', margin: 0,
+        }}>
           {event.name}
         </h3>
 
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: 'auto', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
             <Calendar size={12} /> {dateStr}
           </span>
@@ -93,10 +102,10 @@ export default function EventCard({ event }: EventCardProps) {
 
           return (
             <div style={{
-              padding: '8px 12px', borderRadius: '8px',
+              padding: '6px 12px', borderRadius: '8px',
               background: badgeStyle.bg,
               border: `1px solid ${badgeStyle.border}`,
-              fontSize: '0.82rem', fontWeight: 700, color: badgeStyle.color,
+              fontSize: '0.8rem', fontWeight: 700, color: badgeStyle.color,
               display: 'flex', alignItems: 'center', gap: '6px',
             }}>
               <span>{badgeStyle.icon}</span> {event.result}

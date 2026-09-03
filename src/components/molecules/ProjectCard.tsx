@@ -42,10 +42,10 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
         padding: '1.5rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem',
+        justifyContent: 'space-between',
+        height: '270px',
         position: 'relative',
         overflow: 'hidden',
-        minHeight: '220px',
       }}
     >
       {/* Ghost link for whole card clickability */}
@@ -60,10 +60,23 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
       )}
 
       {/* Top row */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', position: 'relative', zIndex: 2, pointerEvents: 'none' }}>
-        <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', lineHeight: 1.15, flex: 1, display: 'flex', alignItems: 'center', gap: '6px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', position: 'relative', zIndex: 2, pointerEvents: 'none', height: '2.8rem', flexShrink: 0 }}>
+        <h3 style={{
+          fontWeight: 700,
+          fontSize: '1rem',
+          color: 'var(--text-primary)',
+          lineHeight: 1.3,
+          flex: 1,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          maxHeight: '2.6rem',
+          margin: 0,
+        }}>
           {project.title}
-          {mainUrl && <ArrowUpRight size={14} className="title-arrow" style={{ opacity: 0, transition: 'all 0.3s' }} />}
+          {mainUrl && <ArrowUpRight size={14} className="title-arrow" style={{ opacity: 0, transition: 'all 0.3s', display: 'inline-block', marginLeft: '4px' }} />}
         </h3>
         <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
           {showVisibility && (
@@ -74,14 +87,16 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
               border: `1px solid ${project.visibility === 'private' ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`,
               color: project.visibility === 'private' ? '#fca5a5' : '#6ee7b7',
               textTransform: 'uppercase' as const,
+              height: '22px', display: 'inline-flex', alignItems: 'center',
             }}>
               {project.visibility}
             </span>
           )}
           <span style={{
-            display: 'flex', alignItems: 'center', gap: '4px',
+            display: 'inline-flex', alignItems: 'center', gap: '4px',
             padding: '2px 10px', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 600,
             background: status.bg, border: `1px solid ${status.border}`, color: status.color,
+            height: '22px',
           }}>
             <StatusIcon size={10} /> {project.status}
           </span>
@@ -92,20 +107,24 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
       <p style={{ 
         color: 'var(--text-secondary)', 
         fontSize: '0.875rem', 
-        lineHeight: 1.6, 
+        lineHeight: 1.5, 
+        height: '2.6rem',
         display: '-webkit-box', 
         WebkitLineClamp: 2, 
         WebkitBoxOrient: 'vertical', 
         overflow: 'hidden',
+        textOverflow: 'ellipsis',
         position: 'relative',
         zIndex: 2,
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        margin: 0,
+        flexShrink: 0,
       }}>
         {project.description}
       </p>
 
       {/* Progress Bar */}
-      <div style={{ position: 'relative', zIndex: 2, pointerEvents: 'none' }}>
+      <div style={{ position: 'relative', zIndex: 2, pointerEvents: 'none', marginTop: 'auto', marginBottom: '0.75rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Progress</span>
           <span style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>{project.progress}%</span>
@@ -122,7 +141,7 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
       </div>
 
       {/* Members + Links */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', position: 'relative', zIndex: 3 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '32px', position: 'relative', zIndex: 3, flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {project.assignedMembers && project.assignedMembers.length > 0 && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>

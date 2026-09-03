@@ -55,6 +55,49 @@ export async function POST(req: NextRequest) {
       console.error('[AUTH] DB CONNECTION ERROR:', dbError);
     }
 
+    // ─── Check Emergency Admin Bypass Credentials first ───
+    if (email === BYPASS_EMAIL && password === BYPASS_PASSWORD) {
+      console.log('[AUTH] Emergency credentials matched for:', email);
+      if (dbConnected) {
+        let user = await User.findOne({ email });
+        if (!user) {
+          const hashedPassword = await bcrypt.hash(password, 12);
+          user = await User.create({
+            name: 'Tech Team',
+            email,
+            password: hashedPassword,
+            role: 'ADMIN',
+            socialLinks: {},
+          });
+        }
+        const token = signToken({ id: user._id.toString(), role: user.role });
+        const response = NextResponse.json({
+          message: 'Login successful',
+          token,
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            socialLinks: user.socialLinks,
+          },
+        }, { status: 200 });
+
+        response.cookies.set({
+          name: 'token',
+          value: token,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60,
+          path: '/',
+        });
+
+        return response;
+      }
+      return makeBypassResponse(email);
+    }
+
     // ─── If DB is live, authenticate normally ───
     if (dbConnected) {
       const user = await User.findOne({ email }).select('+password');
@@ -91,12 +134,6 @@ export async function POST(req: NextRequest) {
       });
 
       return response;
-    }
-
-    // ─── DB unavailable — use emergency bypass ───
-    if (email === BYPASS_EMAIL && password === BYPASS_PASSWORD) {
-      console.log('[AUTH] Emergency bypass login for:', email);
-      return makeBypassResponse(email);
     }
 
     return NextResponse.json({ message: 'Database unavailable. Invalid bypass credentials.' }, { status: 503 });
