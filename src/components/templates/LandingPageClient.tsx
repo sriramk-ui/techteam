@@ -11,6 +11,7 @@ import MemberCard from '@/components/molecules/MemberCard';
 import EventCard from '@/components/molecules/EventCard';
 import QuoteModal from '@/components/molecules/QuoteModal';
 import ProjectShowcaseModal from '@/components/molecules/ProjectShowcaseModal';
+import AeroShards from '@/components/atoms/AeroShards';
 import TechStackTicker from '@/components/atoms/TechStackTicker';
 
 interface PortfolioProps {
@@ -84,6 +85,38 @@ export default function LandingPageClient({
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative', background: 'var(--bg-base)', overflow: 'hidden' }}>
+      {/* 3D WebGL AeroShards Layer */}
+      <AeroShards
+        backgroundColor="transparent"
+        shardColor="#EC170F"
+        accentColor="#0B3B9B"
+        placement="full"
+        material="pearl"
+        detail="balanced"
+        effect="none"
+        flow="stream"
+        rippleIntensity={1}
+        holdToGather
+        scale={1}
+        spread={1}
+        depth={1}
+        speed={1}
+        spin={1}
+        interaction="repel"
+        density={windowDimensions.w < 768 ? 0.7 : 1.5}
+        shardSize={1.1}
+        stretch={1}
+        turbulence={1}
+        glow={1}
+        edgeSoftness={2}
+        bloom={0.5}
+        grain={0.05}
+        chromaticAberration={0.0075}
+        transitionDuration={1}
+        interactionRadius={2.5}
+        interactionStrength={0.6}
+        paused={false}
+      />
 
       {/* Interactive Mouse Spotlight Aura */}
       <div

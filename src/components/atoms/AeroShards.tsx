@@ -134,7 +134,7 @@ export default function AeroShards({
         metalness: 0.35,
         roughness: 0.25,
         transparent: true,
-        opacity: 0.88,
+        opacity: 0.35,
         flatShading: true,
       });
 
@@ -145,19 +145,23 @@ export default function AeroShards({
       const wireMat = new THREE.LineBasicMaterial({
         color: i % 2 === 0 ? 0xffffff : 0xEC170F,
         transparent: true,
-        opacity: 0.25,
+        opacity: 0.15,
       });
       const wireframe = new THREE.LineSegments(wireGeo, wireMat);
       mesh.add(wireframe);
 
-      // Random position spread across 3D viewport
-      const x = (Math.random() - 0.5) * 22;
-      const y = (Math.random() - 0.5) * 16;
-      const z = (Math.random() - 0.5) * 10 - 2;
+      // Position shards strictly around perimeter to keep central content corridor clean
+      let x = (Math.random() - 0.5) * 32;
+      let y = (Math.random() - 0.5) * 22;
+      if (Math.abs(x) < 11 && Math.abs(y) < 7.5) {
+        x = x >= 0 ? 11 + Math.random() * 5 : -11 - Math.random() * 5;
+        y = y >= 0 ? 7.5 + Math.random() * 4 : -7.5 - Math.random() * 4;
+      }
+      const z = -6 - Math.random() * 8;
 
       mesh.position.set(x, y, z);
 
-      const randomScale = 0.6 + Math.random() * 0.8;
+      const randomScale = 0.4 + Math.random() * 0.45;
       mesh.scale.set(randomScale, randomScale, randomScale);
 
       mesh.rotation.set(
