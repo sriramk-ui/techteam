@@ -197,27 +197,6 @@ export default function LandingPageClient({
         </div>
       </section>
 
-      {/* STATS BAR */}
-      <section style={{ position: 'relative', zIndex: 1, padding: '1rem 1.5rem 3rem' }}>
-        <div style={{
-          maxWidth: '1000px', margin: '0 auto',
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem',
-        }}>
-          {statList.map(({ label, value, icon: Icon, color }, i) => (
-            <div key={i} className="glow-border glass-card" style={{ padding: '1.25rem', borderRadius: '16px', textAlign: 'center' }}>
-              <div style={{ display: 'inline-flex', padding: '8px', borderRadius: '10px', background: `${color}15`, color, marginBottom: '8px' }}>
-                <Icon size={20} />
-              </div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.1 }}>{value}</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px', fontWeight: 500 }}>{label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* TECH TICKER */}
-      <TechStackTicker />
-
       {/* SERVICES & CAPABILITIES SECTION (#services) */}
       <section id="services" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
