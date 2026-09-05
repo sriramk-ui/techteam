@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Code2 } from 'lucide-react';
 import ProjectCard from '@/components/molecules/ProjectCard';
+import ProjectShowcaseModal from '@/components/molecules/ProjectShowcaseModal';
 
 interface ProjectListProps {
   initialProjects: any[];
@@ -12,6 +13,7 @@ const filterOptions = ['All', 'Planning', 'Active', 'Completed'];
 
 export default function ProjectList({ initialProjects }: ProjectListProps) {
   const [activeFilter, setActiveFilter] = useState('All');
+  const [showcaseProject, setShowcaseProject] = useState<any | null>(null);
 
   const filteredProjects = initialProjects.filter((p) => {
     if (activeFilter === 'All') return true;
@@ -59,7 +61,11 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
           }}
         >
           {filteredProjects.map((project) => (
-            <ProjectCard key={project._id} project={project} />
+            <ProjectCard
+              key={project._id}
+              project={project}
+              onCardClick={(p) => setShowcaseProject(p)}
+            />
           ))}
         </div>
       ) : (
@@ -68,6 +74,12 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
           <p>No projects found in this category.</p>
         </div>
       )}
+
+      {/* Showcase Modal */}
+      <ProjectShowcaseModal
+        project={showcaseProject}
+        onClose={() => setShowcaseProject(null)}
+      />
     </>
   );
 }

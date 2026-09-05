@@ -13,11 +13,14 @@ interface ProjectCardProps {
     githubUrl?: string;
     demoUrl?: string;
     projectUrl?: string;
+    notes?: string;
+    tags?: string[];
     assignedMembers?: { _id: string; name: string }[];
     visibility?: 'public' | 'private';
   };
   showVisibility?: boolean;
   onVaultClick?: () => void;
+  onCardClick?: (project: any) => void;
 }
 
 const statusConfig = {
@@ -26,16 +29,24 @@ const statusConfig = {
   Completed: { color: '#06b6d4', bg: 'rgba(6,182,212,0.1)', border: 'rgba(6,182,212,0.3)', Icon: CheckCircle },
 };
 
-export default function ProjectCard({ project, showVisibility = false, onVaultClick }: ProjectCardProps) {
+export default function ProjectCard({ project, showVisibility = false, onVaultClick, onCardClick }: ProjectCardProps) {
   const status = statusConfig[project.status];
   const StatusIcon = status.Icon;
   
   // Decide the main link for the "whole card click"
   const mainUrl = project.projectUrl || project.demoUrl || project.githubUrl;
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (onCardClick) {
+      e.preventDefault();
+      onCardClick(project);
+    }
+  };
+
   return (
     <div
       className="glow-border project-card"
+      onClick={handleCardClick}
       style={{
         background: 'var(--bg-card)',
         borderRadius: 'var(--radius-lg)',
@@ -46,10 +57,11 @@ export default function ProjectCard({ project, showVisibility = false, onVaultCl
         height: '270px',
         position: 'relative',
         overflow: 'hidden',
+        cursor: 'pointer',
       }}
     >
       {/* Ghost link for whole card clickability */}
-      {mainUrl && (
+      {mainUrl && !onCardClick && (
         <a 
           href={mainUrl} 
           target="_blank" 

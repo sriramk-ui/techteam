@@ -6,10 +6,12 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Zap, Sun, Moon } from 'lucide-react';
 
 const navLinks = [
-  { label: 'Portfolio', href: '/' },
-  { label: 'Team', href: '/team' },
+  { label: 'Services', href: '/#services' },
   { label: 'Projects', href: '/projects' },
+  { label: 'Team', href: '/team' },
+  { label: 'Packages', href: '/#pricing' },
   { label: 'Events', href: '/events' },
+  { label: 'Dashboard', href: '/dashboard' },
 ];
 
 export default function Navbar() {
@@ -36,6 +38,18 @@ export default function Navbar() {
     setTheme(nextTheme);
     document.documentElement.setAttribute('data-theme', nextTheme);
     localStorage.setItem('theme', nextTheme);
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === '/' && href.startsWith('/#')) {
+      e.preventDefault();
+      const targetId = href.replace('/#', '');
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    setMobileOpen(false);
   };
 
   return (
@@ -81,11 +95,12 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
                   style={{
-                    padding: '6px 16px',
+                    padding: '6px 14px',
                     borderRadius: '8px',
                     textDecoration: 'none',
-                    fontSize: '0.875rem',
+                    fontSize: '0.85rem',
                     fontWeight: isActive ? 700 : 500,
                     color: isActive ? '#EC170F' : 'var(--text-secondary)',
                     background: isActive ? 'rgba(236, 23, 15, 0.08)' : 'transparent',
@@ -98,6 +113,25 @@ export default function Navbar() {
               );
             })}
           </div>
+
+          {/* Header Get a Quote CTA Button */}
+          <Link
+            href="/#contact"
+            onClick={(e) => handleNavClick(e, '/#contact')}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              color: 'white',
+              background: 'linear-gradient(135deg, #EC170F, #0B3B9B)',
+              boxShadow: '0 4px 14px rgba(236, 23, 15, 0.3)',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            Get a Quote
+          </Link>
 
           {/* Theme Toggle Button */}
           <button
@@ -141,7 +175,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              onClick={() => setMobileOpen(false)}
+              onClick={(e) => handleNavClick(e, link.href)}
               style={{
                 display: 'block',
                 padding: '10px 0',

@@ -2,11 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Zap, Trophy, Code2, Users, Star, GitBranch, ChevronRight, X, Send, Filter, CheckCircle2, MessageSquare } from 'lucide-react';
+import {
+  ArrowRight, Zap, Trophy, Code2, Users, Star, GitBranch, ChevronRight, X, Send,
+  Filter, CheckCircle2, MessageSquare, Sparkles, Layers, Globe, Smartphone, Cpu, Boxes
+} from 'lucide-react';
 import ProjectCard from '@/components/molecules/ProjectCard';
 import MemberCard from '@/components/molecules/MemberCard';
 import EventCard from '@/components/molecules/EventCard';
-import AeroShards from '@/components/atoms/AeroShards';
+import QuoteModal from '@/components/molecules/QuoteModal';
+import ProjectShowcaseModal from '@/components/molecules/ProjectShowcaseModal';
 import TechStackTicker from '@/components/atoms/TechStackTicker';
 
 interface PortfolioProps {
@@ -29,12 +33,15 @@ export default function LandingPageClient({
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [windowDimensions, setWindowDimensions] = useState({ w: 1200, h: 800 });
 
-  // Interactive enhancements states
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
-  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '', type: 'Collaboration' });
+  // Client Quote Modal state
+  const [isQuoteModalOpen, setQuoteModalOpen] = useState<boolean>(false);
+  const [quoteService, setQuoteService] = useState<string>('Custom Web Apps & SaaS');
 
+  // Showcase Modal state
+  const [showcaseProject, setShowcaseProject] = useState<any | null>(null);
+
+  // Interactive filter state
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const categories = ['All', 'Full-Stack', 'AI / ML', 'Hackathon', 'Tools & Utils'];
 
   const filteredProjects = featuredProjects.filter((p) => {
@@ -65,7 +72,6 @@ export default function LandingPageClient({
     };
   }, []);
 
-  // Parallax offsets based on mouse position relative to screen center
   const offsetX = (mousePos.x - windowDimensions.w / 2) * 0.04;
   const offsetY = (mousePos.y - windowDimensions.h / 2) * 0.04;
 
@@ -78,40 +84,8 @@ export default function LandingPageClient({
 
   return (
     <div style={{ minHeight: '100vh', position: 'relative', background: 'var(--bg-base)', overflow: 'hidden' }}>
-      {/* 3D WebGL AeroShards Background Layer (React Bits Style) */}
-      <AeroShards
-        backgroundColor="transparent"
-        shardColor="#EC170F"
-        accentColor="#0B3B9B"
-        placement="full"
-        material="pearl"
-        detail="balanced"
-        effect="none"
-        flow="stream"
-        rippleIntensity={1}
-        holdToGather
-        scale={1}
-        spread={1}
-        depth={1}
-        speed={1}
-        spin={1}
-        interaction="repel"
-        density={windowDimensions.w < 768 ? 0.7 : 1.5}
-        shardSize={1.1}
-        stretch={1}
-        turbulence={1}
-        glow={1}
-        edgeSoftness={2}
-        bloom={0.5}
-        grain={0.05}
-        chromaticAberration={0.0075}
-        transitionDuration={1}
-        interactionRadius={2.5}
-        interactionStrength={0.6}
-        paused={false}
-      />
 
-      {/* Interactive Mouse Spotlight Aura (React Bits Style) */}
+      {/* Interactive Mouse Spotlight Aura */}
       <div
         style={{
           position: 'fixed',
@@ -123,10 +97,10 @@ export default function LandingPageClient({
         }}
       />
 
-      {/* Circuit Grid Overlay */}
+      {/* Grid Overlay */}
       <div className="grid-bg" style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }} />
 
-      {/* Ambient Radial Orbs */}
+      {/* Orbs */}
       <div className="orb" style={{
         width: '650px', height: '650px', background: '#EC170F', top: '-120px', left: '-120px', zIndex: 0,
         transform: `translate3d(${offsetX * 0.5}px, ${offsetY * 0.5}px, 0)`,
@@ -138,590 +112,429 @@ export default function LandingPageClient({
         transition: 'transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1)'
       }} />
 
-      {/* === TOP-LEFT CORNER TECH SHARDS GRAPHIC (With Mouse Parallax) === */}
-      <svg className="poster-shards-top-left float-slow" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg"
-        style={{ transform: `translate3d(${offsetX * 0.3}px, ${offsetY * 0.3}px, 0)` }}
-      >
-        <polygon points="0,0 240,0 120,120 0,60" fill="#0B3B9B" opacity="0.85" />
-        <polygon points="0,40 280,0 310,30 0,180" fill="#EC170F" opacity="0.9" />
-        <polygon points="0,150 180,30 210,60 0,220" fill="#07060E" opacity="0.75" />
-        <line x1="20" y1="200" x2="160" y2="60" stroke="#0B3B9B" strokeWidth="2" />
-        <circle cx="160" cy="60" r="4" fill="#EC170F" />
-        <line x1="60" y1="240" x2="240" y2="60" stroke="#EC170F" strokeWidth="1.5" strokeDasharray="4 4" />
-        <g fill="#0C1E49" opacity="0.3">
-          <circle cx="20" cy="260" r="2" /><circle cx="32" cy="260" r="2" /><circle cx="44" cy="260" r="2" />
-          <circle cx="20" cy="272" r="2" /><circle cx="32" cy="272" r="2" /><circle cx="44" cy="272" r="2" />
-          <circle cx="20" cy="284" r="2" /><circle cx="32" cy="284" r="2" /><circle cx="44" cy="284" r="2" />
-        </g>
-      </svg>
-
-      {/* === BOTTOM-RIGHT CORNER TECH SHARDS GRAPHIC (With Mouse Parallax) === */}
-      <svg className="poster-shards-bottom-right float-slow" viewBox="0 0 340 340" fill="none" xmlns="http://www.w3.org/2000/svg"
-        style={{ transform: `translate3d(${-offsetX * 0.3}px, ${-offsetY * 0.3}px, 0)` }}
-      >
-        <polygon points="340,340 100,340 220,220 340,280" fill="#EC170F" opacity="0.85" />
-        <polygon points="340,300 60,340 30,310 340,160" fill="#0B3B9B" opacity="0.9" />
-        <polygon points="340,190 160,310 130,280 340,120" fill="#07060E" opacity="0.75" />
-        <line x1="320" y1="140" x2="180" y2="280" stroke="#EC170F" strokeWidth="2" />
-        <circle cx="180" cy="280" r="4" fill="#0B3B9B" />
-        <g fill="#0B3B9B" opacity="0.35">
-          <circle cx="300" cy="80" r="2" /><circle cx="312" cy="80" r="2" /><circle cx="324" cy="80" r="2" />
-          <circle cx="300" cy="92" r="2" /><circle cx="312" cy="92" r="2" /><circle cx="324" cy="92" r="2" />
-          <circle cx="300" cy="104" r="2" /><circle cx="312" cy="104" r="2" /><circle cx="324" cy="104" r="2" />
-        </g>
-      </svg>
-
-      {/* === HERO SECTION === */}
+      {/* HERO SECTION */}
       <section style={{ position: 'relative', zIndex: 1, padding: '6.5rem 1.5rem 4rem', textAlign: 'center' }}>
-        {/* PARALLAX FLOATING 3D POLYGON CRYSTALS (React Bits Style) */}
-        <div className="crystal-float hidden-mobile" style={{
-          position: 'absolute', top: '12%', left: '7%', pointerEvents: 'none', zIndex: 1,
-          transform: `translate3d(${offsetX * 0.8}px, ${offsetY * 0.8}px, 0)`,
-          transition: 'transform 0.15s ease-out'
-        }}>
-          <svg width="65" height="75" viewBox="0 0 60 70" fill="none">
-            <polygon points="30,0 60,25 30,70 0,25" fill="#EC170F" opacity="0.9" />
-            <polygon points="30,0 60,25 30,35" fill="#FF4D4D" />
-            <polygon points="0,25 30,35 30,70" fill="#B30E07" />
-          </svg>
-        </div>
-
-        <div className="crystal-float-reverse hidden-mobile" style={{
-          position: 'absolute', top: '18%', right: '8%', pointerEvents: 'none', zIndex: 1,
-          transform: `translate3d(${-offsetX * 0.9}px, ${-offsetY * 0.9}px, 0)`,
-          transition: 'transform 0.15s ease-out'
-        }}>
-          <svg width="75" height="90" viewBox="0 0 70 85" fill="none">
-            <polygon points="35,0 70,30 35,85 0,30" fill="#0B3B9B" opacity="0.9" />
-            <polygon points="35,0 70,30 35,42" fill="#2563EB" />
-            <polygon points="0,30 35,42 35,85" fill="#072366" />
-          </svg>
-        </div>
-
-        <div className="crystal-float-spin hidden-mobile" style={{
-          position: 'absolute', bottom: '15%', left: '12%', pointerEvents: 'none', zIndex: 1,
-          transform: `translate3d(${offsetX * 0.6}px, ${offsetY * 0.6}px, 0)`,
-          transition: 'transform 0.15s ease-out'
-        }}>
-          <svg width="50" height="60" viewBox="0 0 45 55" fill="none">
-            <polygon points="22,0 45,20 22,55 0,20" fill="#07060E" opacity="0.8" />
-            <polygon points="22,0 45,20 22,28" fill="#1E293B" />
-          </svg>
-        </div>
-
-        <div className="crystal-float hidden-mobile" style={{
-          position: 'absolute', bottom: '25%', right: '14%', pointerEvents: 'none', zIndex: 1,
-          transform: `translate3d(${-offsetX * 0.7}px, ${-offsetY * 0.7}px, 0)`,
-          transition: 'transform 0.15s ease-out'
-        }}>
-          <svg width="40" height="50" viewBox="0 0 40 50" fill="none">
-            <polygon points="20,0 40,18 20,50 0,18" fill="#EC170F" opacity="0.75" />
-            <polygon points="20,0 40,18 20,25" fill="#FF6B6B" />
-          </svg>
-        </div>
-
-        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
-          {/* Floating Tech HUD Frame Badge */}
-          <div className="hud-frame float-fast" style={{
-            display: 'inline-flex', alignItems: 'center', gap: '10px',
-            marginBottom: '2rem',
-            animation: 'fadeIn 0.5s ease-out',
-            boxShadow: '0 8px 25px rgba(11, 59, 155, 0.12)',
-            transform: `translate3d(${offsetX * 0.2}px, ${offsetY * 0.2}px, 0)`,
-            transition: 'transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1)'
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            padding: '6px 18px', borderRadius: '30px',
+            background: 'rgba(236, 23, 15, 0.08)', border: '1px solid rgba(236, 23, 15, 0.3)',
+            color: '#EC170F', fontSize: '0.85rem', fontWeight: 700, marginBottom: '2rem',
+            boxShadow: '0 4px 20px rgba(236, 23, 15, 0.15)',
           }}>
-            <div className="pulse-dot" style={{ width: '6px', height: '6px' }} />
-            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.1em' }}>
-              OFFICIAL TEAM PORTFOLIO & COLLECTIVE
-            </span>
+            <Zap size={14} fill="#EC170F" />
+            <span>Full-Stack Engineering & Web Studio</span>
           </div>
 
-          {/* Parallax Floating Headline */}
-          <h1 className="float-hero-title" style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-            fontWeight: 900, lineHeight: 1.1,
+          <h1 style={{
+            fontSize: 'clamp(2.5rem, 6vw, 4.2rem)',
+            fontWeight: 900,
+            lineHeight: 1.1,
             letterSpacing: '-0.03em',
             color: 'var(--text-primary)',
             marginBottom: '1.5rem',
-            transform: `translate3d(${offsetX * 0.4}px, ${offsetY * 0.4}px, 0)`,
-            transition: 'transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1)'
           }}>
-            We Build.{' '}
-            <span className="gradient-text">We Compete.</span>
-            <br />
-            We Deliver.
+            We Build Fast, High-Converting <br />
+            <span className="gradient-text">Web Apps & Digital Experiences.</span>
           </h1>
 
           <p style={{
-            fontSize: '1.125rem', color: 'var(--text-secondary)', lineHeight: 1.8,
-            maxWidth: '620px', margin: '0 auto 1rem',
-            fontWeight: 500,
+            fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+            color: 'var(--text-secondary)',
+            maxWidth: '680px',
+            margin: '0 auto 2.5rem',
+            lineHeight: 1.7,
+            fontWeight: 400,
           }}>
-            Welcome to our team portfolio. We are a full-stack engineering collective dedicated to solving real-world challenges, building software, and competing in hackathons.
+            From enterprise Next.js applications and SaaS platforms to 3D WebGL sites and client portfolios — we build production-ready digital products that scale.
           </p>
 
-          <p style={{
-            fontSize: '0.875rem', color: '#EC170F', fontStyle: 'italic',
-            fontWeight: 600, opacity: 0.9, marginBottom: '2.5rem',
-          }}>
-            "triggers change without sounding violent"
-          </p>
-
-          {/* CTAs */}
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="#featured-projects" id="hero-cta-projects" className="cta-primary float-fast">
-              Explore Portfolio <ArrowRight size={16} />
-            </Link>
-            <Link href="/team" id="hero-cta-team" className="cta-secondary float-fast">
-              <Users size={16} /> Meet the Team
-            </Link>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => { setQuoteService('Custom Web Apps & SaaS'); setQuoteModalOpen(true); }}
+              className="cta-primary"
+              style={{ border: 'none', cursor: 'pointer' }}
+            >
+              <Sparkles size={18} /> Request a Quote
+            </button>
+            <a href="#services" className="cta-secondary">
+              Explore Services <ArrowRight size={16} />
+            </a>
           </div>
         </div>
       </section>
 
-      {/* === STATS WITH INTERACTIVE 3D TILT CARDS === */}
-      <section style={{ position: 'relative', zIndex: 1, padding: '0 1.5rem 5rem' }}>
-        <div className="crystal-float-reverse hidden-mobile" style={{
-          position: 'absolute', top: '10%', right: '5%', pointerEvents: 'none', zIndex: 0,
-          transform: `translate3d(${-offsetX * 0.6}px, ${-offsetY * 0.6}px, 0)`
+      {/* STATS BAR */}
+      <section style={{ position: 'relative', zIndex: 1, padding: '1rem 1.5rem 3rem' }}>
+        <div style={{
+          maxWidth: '1000px', margin: '0 auto',
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem',
         }}>
-          <svg width="50" height="60" viewBox="0 0 50 60" fill="none">
-            <polygon points="25,0 50,22 25,60 0,22" fill="#0B3B9B" opacity="0.6" />
-          </svg>
+          {statList.map(({ label, value, icon: Icon, color }, i) => (
+            <div key={i} className="glow-border glass-card" style={{ padding: '1.25rem', borderRadius: '16px', textAlign: 'center' }}>
+              <div style={{ display: 'inline-flex', padding: '8px', borderRadius: '10px', background: `${color}15`, color, marginBottom: '8px' }}>
+                <Icon size={20} />
+              </div>
+              <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.1 }}>{value}</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px', fontWeight: 500 }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* TECH TICKER */}
+      <TechStackTicker />
+
+      {/* SERVICES & CAPABILITIES SECTION (#services) */}
+      <section id="services" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(236,23,15,0.08)', border: '1px solid rgba(236,23,15,0.25)', color: '#EC170F', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <Sparkles size={14} /> Client Services & Engineering
+          </div>
+          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
+            What We <span className="gradient-text">Build For You</span>
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: '620px', margin: '0 auto', fontSize: '1rem', lineHeight: 1.6 }}>
+            We transform complex ideas into production-grade web platforms, high-converting portfolios, and custom interactive digital experiences.
+          </p>
         </div>
 
-        <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
-          {statList.map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <div key={stat.label} className="glass glow-border float-card-3d" style={{
-                borderRadius: 'var(--radius-lg)',
-                padding: '1.5rem',
-                textAlign: 'center',
-              }}>
-                <div style={{ marginBottom: '0.75rem', display: 'flex', justifyContent: 'center' }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: `${stat.color}14`, border: `1px solid ${stat.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon size={20} color={stat.color} />
-                  </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
+          {[
+            {
+              icon: Globe,
+              title: 'Custom Web Apps & SaaS',
+              desc: 'Scalable Next.js & React platforms with authentication, real-time database, role permissions, and custom admin panels.',
+              color: '#EC170F',
+              service: 'Custom Web Apps & SaaS',
+            },
+            {
+              icon: Layers,
+              title: 'Interactive Portfolios',
+              desc: 'High-impact personal & agency portfolios featuring liquid micro-interactions, smooth scroll, and dark mode design systems.',
+              color: '#0B3B9B',
+              service: 'Interactive Portfolios & Showcases',
+            },
+            {
+              icon: Smartphone,
+              title: 'E-Commerce & High-Converting Stores',
+              desc: 'Mobile-first stores and high-converting landing pages built for speed, SEO ranking, and frictionless checkout flows.',
+              color: '#10b981',
+              service: 'E-Commerce & High-Converting Stores',
+            },
+            {
+              icon: Cpu,
+              title: '3D WebGL & Scroll-Animations',
+              desc: 'Custom Three.js 3D shaders, WebGL interactive models, particle systems, and immersive scroll-driven web animations.',
+              color: '#8b5cf6',
+              service: '3D WebGL & Scroll-Animation Websites',
+            },
+          ].map((srv, idx) => (
+            <div
+              key={idx}
+              className="glow-border glass-strong"
+              style={{
+                padding: '2rem', borderRadius: '20px', border: '1px solid var(--border-default)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                transition: 'all 0.3s ease',
+              }}
+            >
+              <div>
+                <div style={{
+                  width: '48px', height: '48px', borderRadius: '14px',
+                  background: `${srv.color}15`, border: `1px solid ${srv.color}40`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: srv.color, marginBottom: '1.25rem',
+                }}>
+                  <srv.icon size={24} />
                 </div>
-                <div style={{ fontSize: '2rem', fontWeight: 900, color: stat.color, lineHeight: 1 }}>{stat.value}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600, marginTop: '0.4rem' }}>{stat.label}</div>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.6rem' }}>
+                  {srv.title}
+                </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+                  {srv.desc}
+                </p>
               </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* === TECH STACK CONTINUOUS TICKER MARQUEE === */}
-      <section style={{ position: 'relative', zIndex: 1, padding: '0 1.5rem 3rem' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-              OUR CORE STACK & TECHNOLOGIES
-            </span>
-          </div>
-          <TechStackTicker />
-        </div>
-      </section>
-
-      {/* === FEATURED PROJECTS WITH 3D TILT CARDS & CATEGORY FILTERS === */}
-      <section id="featured-projects" style={{ position: 'relative', zIndex: 1, padding: '0 1.5rem 5rem' }}>
-        <div className="crystal-float hidden-mobile" style={{
-          position: 'absolute', top: '5%', left: '3%', pointerEvents: 'none', zIndex: 0,
-          transform: `translate3d(${offsetX * 0.7}px, ${offsetY * 0.7}px, 0)`
-        }}>
-          <svg width="55" height="65" viewBox="0 0 55 65" fill="none">
-            <polygon points="27,0 55,24 27,65 0,24" fill="#EC170F" opacity="0.75" />
-          </svg>
-        </div>
-
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EC170F', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
-                <Code2 size={16} /> PORTFOLIO HIGHLIGHTS
-              </div>
-              <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', fontWeight: 900, color: 'var(--text-primary)' }}>
-                Featured Projects
-              </h2>
-            </div>
-            <Link href="/projects" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#0B3B9B', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
-              View All Projects <ChevronRight size={16} />
-            </Link>
-          </div>
-
-          {/* Interactive Category Filter Chips */}
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, marginRight: '8px' }}>
-              <Filter size={14} /> Filter:
-            </div>
-            {categories.map((cat) => (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => { setQuoteService(srv.service); setQuoteModalOpen(true); }}
                 style={{
-                  padding: '6px 16px',
-                  borderRadius: '20px',
-                  border: selectedCategory === cat ? '1px solid #EC170F' : '1px solid var(--border-default)',
-                  background: selectedCategory === cat ? 'linear-gradient(135deg, rgba(236, 23, 15, 0.15), rgba(11, 59, 155, 0.15))' : 'var(--bg-card)',
-                  color: selectedCategory === cat ? '#EC170F' : 'var(--text-secondary)',
-                  fontWeight: selectedCategory === cat ? 800 : 600,
-                  fontSize: '0.82rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: selectedCategory === cat ? '0 4px 15px rgba(236, 23, 15, 0.2)' : 'none',
+                  display: 'inline-flex', alignItems: 'center', gap: '6px',
+                  background: 'none', border: 'none', color: srv.color,
+                  fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', padding: 0,
                 }}
               >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {filteredProjects.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-              {filteredProjects.map((project) => (
-                <div key={project._id} className="float-card-3d">
-                  <ProjectCard project={project} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="glass glow-border float-slow" style={{ padding: '3rem', textAlign: 'center', borderRadius: 'var(--radius-lg)', color: 'var(--text-muted)' }}>
-              <Code2 size={40} style={{ marginBottom: '1rem', opacity: 0.3 }} />
-              <p>No projects found in this category.</p>
-              <button onClick={() => setSelectedCategory('All')} style={{ background: 'none', border: 'none', color: '#EC170F', fontWeight: 700, marginTop: '0.5rem', cursor: 'pointer' }}>
-                Reset Filter
+                Request Quote <ArrowRight size={14} />
               </button>
             </div>
-          )}
+          ))}
         </div>
       </section>
 
-      {/* === MEET THE TEAM WITH 3D TILT CARDS === */}
-      <section style={{ position: 'relative', zIndex: 1, padding: '0 1.5rem 5rem' }}>
-        <div className="crystal-float-reverse hidden-mobile" style={{
-          position: 'absolute', top: '15%', right: '4%', pointerEvents: 'none', zIndex: 0,
-          transform: `translate3d(${-offsetX * 0.8}px, ${-offsetY * 0.8}px, 0)`
-        }}>
-          <svg width="60" height="70" viewBox="0 0 60 70" fill="none">
-            <polygon points="30,0 60,25 30,70 0,25" fill="#0B3B9B" opacity="0.8" />
-          </svg>
+      {/* FEATURED PROJECTS SHOWCASE (#projects) */}
+      <section id="projects" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <span style={{ color: '#EC170F', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              Our Portfolio
+            </span>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+              Things We&apos;ve <span className="gradient-text">Built</span>
+            </h2>
+          </div>
+          <Link href="/projects" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#EC170F', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none' }}>
+            View All Projects ({stats?.projectsCount || 0}) <ArrowRight size={16} />
+          </Link>
         </div>
 
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        {/* Filter Pills */}
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              style={{
+                padding: '6px 16px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600,
+                background: selectedCategory === cat ? 'rgba(236, 23, 15, 0.15)' : 'rgba(255, 255, 255, 0.04)',
+                border: `1px solid ${selectedCategory === cat ? '#EC170F' : 'var(--border-subtle)'}`,
+                color: selectedCategory === cat ? '#EC170F' : 'var(--text-muted)',
+                cursor: 'pointer', transition: 'all 0.2s',
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {filteredProjects.length > 0 ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+            {filteredProjects.map((project) => (
+              <ProjectCard
+                key={project._id}
+                project={project}
+                onCardClick={(p) => setShowcaseProject(p)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-muted)' }}>
+            <Code2 size={40} style={{ opacity: 0.3, marginBottom: '1rem' }} />
+            <p>No projects in this filter category yet.</p>
+          </div>
+        )}
+      </section>
+
+      {/* TEAM MEMBERS SECTION (#team) */}
+      {teamMembers.length > 0 && (
+        <section id="team" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#0B3B9B', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
-                <Users size={16} /> OUR TALENT
-              </div>
-              <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', fontWeight: 900, color: 'var(--text-primary)' }}>
-                Meet the Team
+              <span style={{ color: '#0B3B9B', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                Engineering Team
+              </span>
+              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+                Meet the <span className="gradient-text">Developers</span>
               </h2>
             </div>
-            <Link href="/team" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#EC170F', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
-              View All Members <ChevronRight size={16} />
+            <Link href="/team" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#0B3B9B', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none' }}>
+              View All Team Members <ArrowRight size={16} />
             </Link>
           </div>
 
-          {teamMembers.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
-              {teamMembers.map((member) => (
-                <div key={member._id} className="float-card-3d">
-                  <MemberCard member={member} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="glass glow-border float-slow" style={{ padding: '3rem', textAlign: 'center', borderRadius: 'var(--radius-lg)', color: 'var(--text-muted)' }}>
-              <Users size={40} style={{ marginBottom: '1rem', opacity: 0.3 }} />
-              <p>Team members loading...</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* === RECENT EVENTS / HACKATHONS WITH 3D TILT CARDS === */}
-      {recentEvents.length > 0 && (
-        <section style={{ position: 'relative', zIndex: 1, padding: '0 1.5rem 5rem' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EC170F', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
-                  <Trophy size={16} /> COMPETITIONS & HACKATHONS
-                </div>
-                <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', fontWeight: 900, color: 'var(--text-primary)' }}>
-                  Recent Hackathons
-                </h2>
-              </div>
-              <Link href="/events" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#0B3B9B', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem' }}>
-                View All Events <ChevronRight size={16} />
-              </Link>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-              {recentEvents.map((event) => (
-                <div key={event._id} className="float-card-3d">
-                  <EventCard event={event} />
-                </div>
-              ))}
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem' }}>
+            {teamMembers.map((member) => (
+              <MemberCard key={member._id} member={member} />
+            ))}
           </div>
         </section>
       )}
 
-      {/* === WHAT WE DO DOMAINS WITH 3D TILT CARDS === */}
-      <section style={{ position: 'relative', zIndex: 1, padding: '0 1.5rem 6rem' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
-              Engineering Domains
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto', lineHeight: 1.7, fontWeight: 500 }}>
-              Our core capabilities across web applications, backend engineering, system architecture, and hackathons.
-            </p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-            {[
-              { icon: Code2, color: '#EC170F', title: 'Full-Stack Applications', desc: 'End-to-end web applications built with Next.js, Node.js, Python, and modern cloud architecture.' },
-              { icon: Trophy, color: '#0B3B9B', title: 'Hackathon Champions', desc: 'We compete in regional and global hackathons, delivering complete solutions under tight deadlines.' },
-              { icon: GitBranch, color: '#2563EB', title: 'Open Source & Tooling', desc: 'Active contributors to open source projects and internal toolkits for rapid development.' },
-              { icon: Zap, color: '#EC170F', title: 'Rapid Prototyping', desc: 'Moving from raw ideas to interactive, working prototypes in 48 hours.' },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.title} className="glass glow-border float-card-3d" style={{
-                  borderRadius: 'var(--radius-lg)', padding: '1.75rem',
-                  cursor: 'default',
-                }}>
-                  <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: `${item.color}14`, border: `1px solid ${item.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem' }}>
-                    <Icon size={22} color={item.color} />
-                  </div>
-                  <h3 style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)', marginBottom: '0.6rem' }}>{item.title}</h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.7 }}>{item.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* === CTA BANNER WITH 3D FLOATING HUD === */}
-      <section style={{ position: 'relative', zIndex: 1, padding: '0 1.5rem 6rem' }}>
-        <div style={{ maxWidth: '750px', margin: '0 auto', textAlign: 'center' }}>
-          <div className="glass-strong hud-frame float-slow" style={{ borderRadius: 'var(--radius-xl)', padding: '3.5rem 2rem' }}>
-            <h2 style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
-              Want to Collaborate or Join Us?
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: 1.7, maxWidth: '540px', margin: '0 auto 2rem', fontWeight: 500 }}>
-              Explore our team members and featured projects, or get in touch for collaborations.
-            </p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="cta-primary float-fast"
-                style={{ border: 'none', cursor: 'pointer' }}
-              >
-                <MessageSquare size={16} /> Contact / Collaborate
-              </button>
-              <Link href="/team" className="cta-secondary float-fast">
-                Meet the Team <ArrowRight size={16} />
-              </Link>
+      {/* RECENT EVENTS & HACKATHONS (#events) */}
+      {recentEvents.length > 0 && (
+        <section id="events" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <span style={{ color: '#f59e0b', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                Track Record
+              </span>
+              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
+                Events & <span className="gradient-text">Hackathons</span>
+              </h2>
             </div>
+            <Link href="/events" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#f59e0b', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none' }}>
+              All Achievements <ArrowRight size={16} />
+            </Link>
           </div>
-        </div>
-      </section>
 
-      {/* === INTERACTIVE QUICK COLLABORATION MODAL === */}
-      {isModalOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 999,
-            background: 'rgba(7, 6, 14, 0.75)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1.5rem',
-            animation: 'fadeIn 0.2s ease-out',
-          }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setIsModalOpen(false);
-          }}
-        >
-          <div
-            className="glass-strong hud-frame"
-            style={{
-              width: '100%',
-              maxWidth: '520px',
-              borderRadius: 'var(--radius-xl)',
-              padding: '2.5rem 2rem',
-              position: 'relative',
-            }}
-          >
-            <button
-              onClick={() => setIsModalOpen(false)}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+            {recentEvents.map((event) => (
+              <EventCard key={event._id} event={event} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* SERVICE PACKAGES & PRICING TIERS (#pricing) */}
+      <section id="pricing" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(11,59,155,0.08)', border: '1px solid rgba(11,59,155,0.25)', color: '#2563EB', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <Boxes size={14} /> Transparent Service Packages
+          </div>
+          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
+            Transparent <span className="gradient-text">Pricing & Packages</span>
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: '580px', margin: '0 auto', fontSize: '1rem', lineHeight: 1.6 }}>
+            Choose a package tailored to your vision — from swift portfolio launches to enterprise SaaS engineering.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          {[
+            {
+              name: 'Starter Portfolio',
+              price: '$500 – $1,500',
+              badge: 'Fast Delivery',
+              popular: false,
+              desc: 'Ideal for developers, creators, and freelancers who need a sleek digital presence.',
+              features: [
+                'Responsive Single-Page / Multi-Tab Site',
+                'Smooth Scroll & Framer Motion Animations',
+                'SEO Optimized & Lightning Fast Load',
+                'Contact & Lead Capture Form',
+                'GitHub / Vercel One-Click Deployment',
+              ],
+            },
+            {
+              name: 'Full-Stack Web App',
+              price: '$1,500 – $3,500',
+              badge: 'Most Popular',
+              popular: true,
+              desc: 'Complete production-ready web application built with Next.js, MongoDB & Auth.',
+              features: [
+                'Next.js 16 + React 19 + TypeScript',
+                'MongoDB Database & JWT Authentication',
+                'Admin Dashboard & Management Portal',
+                'Custom REST API & Role-Based Access',
+                'Secure File / Image Upload Integration',
+              ],
+            },
+            {
+              name: 'Enterprise & 3D Custom',
+              price: '$3,500+',
+              badge: 'High Scale',
+              popular: false,
+              desc: 'For brands needing custom 3D WebGL experiences, encryption vaults, and dedicated team SLA.',
+              features: [
+                'Interactive Three.js 3D WebGL Canvas',
+                'Encrypted Credentials Vault Integration',
+                'Custom Microservices & Database Arch',
+                'Priority 24/7 Support & Maintenance SLA',
+                'Custom Domain & Brand Design System',
+              ],
+            },
+          ].map((pkg, idx) => (
+            <div
+              key={idx}
+              className="glass-strong"
               style={{
-                position: 'absolute',
-                top: '18px',
-                right: '18px',
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-muted)',
-                cursor: 'pointer',
-                padding: '4px',
+                padding: '2.5rem 2rem', borderRadius: '24px',
+                border: pkg.popular ? '2px solid #EC170F' : '1px solid var(--border-default)',
+                boxShadow: pkg.popular ? '0 15px 40px rgba(236,23,15,0.2)' : 'none',
+                position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
               }}
             >
-              <X size={20} />
-            </button>
-
-            {formSubmitted ? (
-              <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
-                <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
-                  <CheckCircle2 size={32} color="#10b981" />
-                </div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-                  Message Sent!
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                  Thank you for reaching out. Our team will get back to you shortly.
-                </p>
-                <button
-                  onClick={() => {
-                    setFormSubmitted(false);
-                    setIsModalOpen(false);
-                  }}
-                  className="cta-primary"
-                  style={{ border: 'none', cursor: 'pointer' }}
-                >
-                  Close Window
-                </button>
-              </div>
-            ) : (
+              {pkg.badge && (
+                <span style={{
+                  position: 'absolute', top: '1.25rem', right: '1.25rem',
+                  padding: '4px 12px', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 800,
+                  background: pkg.popular ? 'linear-gradient(135deg, #EC170F, #0B3B9B)' : 'rgba(255,255,255,0.06)',
+                  border: pkg.popular ? 'none' : '1px solid var(--border-subtle)',
+                  color: 'white', textTransform: 'uppercase', letterSpacing: '0.05em',
+                }}>
+                  {pkg.badge}
+                </span>
+              )}
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#EC170F', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-                  <MessageSquare size={14} /> TEAM INQUIRY & COLLABORATION
-                </div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1.5rem' }}>
-                  Let's Build Something
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                  {pkg.name}
                 </h3>
-
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setFormSubmitted(true);
-                  }}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
-                >
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Jane Doe"
-                      value={contactForm.name}
-                      onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid var(--border-default)',
-                        background: 'var(--bg-base)',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.9rem',
-                        outline: 'none',
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="jane@example.com"
-                      value={contactForm.email}
-                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid var(--border-default)',
-                        background: 'var(--bg-base)',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.9rem',
-                        outline: 'none',
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                      Inquiry Type
-                    </label>
-                    <select
-                      value={contactForm.type}
-                      onChange={(e) => setContactForm({ ...contactForm, type: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid var(--border-default)',
-                        background: 'var(--bg-base)',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.9rem',
-                        outline: 'none',
-                      }}
-                    >
-                      <option value="Collaboration">Project Collaboration</option>
-                      <option value="Hackathon">Hackathon Teaming</option>
-                      <option value="General">General Inquiry</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>
-                      Message
-                    </label>
-                    <textarea
-                      required
-                      rows={4}
-                      placeholder="Tell us about your project or idea..."
-                      value={contactForm.message}
-                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px 14px',
-                        borderRadius: '8px',
-                        border: '1px solid var(--border-default)',
-                        background: 'var(--bg-base)',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.9rem',
-                        outline: 'none',
-                        resize: 'none',
-                      }}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="cta-primary"
-                    style={{ border: 'none', cursor: 'pointer', width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}
-                  >
-                    <Send size={16} /> Send Message
-                  </button>
-                </form>
+                <div style={{ fontSize: '1.8rem', fontWeight: 900, color: pkg.popular ? '#EC170F' : 'var(--text-primary)', marginBottom: '1rem' }}>
+                  {pkg.price}
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.5, marginBottom: '1.75rem' }}>
+                  {pkg.desc}
+                </p>
+                <div style={{ height: '1px', background: 'var(--border-subtle)', marginBottom: '1.75rem' }} />
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {pkg.features.map((feat, fIdx) => (
+                    <li key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                      <CheckCircle2 size={16} color={pkg.popular ? '#EC170F' : '#10b981'} style={{ flexShrink: 0 }} />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            )}
+              <button
+                onClick={() => { setQuoteService(pkg.name); setQuoteModalOpen(true); }}
+                style={{
+                  width: '100%', padding: '14px', borderRadius: '12px',
+                  border: pkg.popular ? 'none' : '1px solid var(--border-default)',
+                  background: pkg.popular ? 'linear-gradient(135deg, #EC170F, #0B3B9B)' : 'rgba(255,255,255,0.06)',
+                  color: 'white', fontWeight: 800, cursor: 'pointer',
+                  boxShadow: pkg.popular ? '0 8px 25px rgba(236,23,15,0.3)' : 'none',
+                  transition: 'all 0.2s',
+                }}
+              >
+                Request Quote
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CLIENT INQUIRY CTA & CONTACT SECTION (#contact) */}
+      <section id="contact" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem 7rem', maxWidth: '1100px', margin: '0 auto' }}>
+        <div className="glass-strong" style={{
+          borderRadius: '32px', padding: '3.5rem 2rem', textAlign: 'center',
+          border: '1px solid rgba(236,23,15,0.3)',
+          background: 'linear-gradient(135deg, rgba(236,23,15,0.06) 0%, rgba(11,59,155,0.06) 100%)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+        }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '20px', background: 'rgba(236,23,15,0.12)', color: '#EC170F', fontSize: '0.8rem', fontWeight: 800, marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <Zap size={14} /> Ready To Build?
+          </div>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem', letterSpacing: '-0.03em' }}>
+            Have a Project in Mind? <span className="gradient-text">Let&apos;s Build It.</span>
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto 2.5rem', fontSize: '1.05rem', lineHeight: 1.7 }}>
+            From concept design to full-stack deployment — get a custom quote and timeline for your web app, portfolio, or e-commerce store.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => { setQuoteService('Custom Web Apps & SaaS'); setQuoteModalOpen(true); }}
+              className="cta-primary"
+              style={{ border: 'none', cursor: 'pointer', fontSize: '1rem', padding: '14px 32px' }}
+            >
+              <Sparkles size={18} /> Request a Project Quote
+            </button>
+            <Link href="/team" className="cta-secondary">
+              <Users size={18} /> Meet the Engineering Team
+            </Link>
           </div>
         </div>
-      )}
+      </section>
+
+      {/* Quote Request Modal */}
+      <QuoteModal
+        isOpen={isQuoteModalOpen}
+        onClose={() => setQuoteModalOpen(false)}
+        initialService={quoteService}
+      />
+
+      {/* Project Showcase Modal */}
+      <ProjectShowcaseModal
+        project={showcaseProject}
+        onClose={() => setShowcaseProject(null)}
+      />
 
       <style>{`
         .cta-primary {
