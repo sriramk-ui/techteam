@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Mail, ArrowLeft, ExternalLink, Code2, Globe, Server, CheckCircle, ChevronRight } from 'lucide-react';
+import { Mail, ArrowLeft, ExternalLink, Code2, Globe, Server, CheckCircle, ChevronRight, ArrowUpRight } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, InstagramIcon } from '@/components/atoms/icons';
 import ProjectCard from '@/components/molecules/ProjectCard';
 import { User } from '@/models/User';
@@ -16,13 +16,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   try {
     await connectToDatabase();
     const user = await User.findById(id).select('name role').lean();
-    if (!user) return { title: 'Member Not Found | Innovation Collaboration' };
+    if (!user) return { title: 'Member Not Found | Tech Team Studio' };
     return {
-      title: `${user.name} - Developer Portfolio | Innovation Collaboration`,
-      description: `Explore ${user.name}'s developer profile, skills, and projects at Innovation Collaboration.`,
+      title: `${user.name} — Developer Profile | Tech Team Studio`,
+      description: `Explore ${user.name}'s engineering profile, tech stack, and shipped projects at Tech Team Studio.`,
     };
   } catch {
-    return { title: 'Member Profile | Innovation Collaboration' };
+    return { title: 'Developer Profile | Tech Team Studio' };
   }
 }
 
@@ -62,332 +62,219 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
   const socialLinks = member.socialLinks || {};
   const primaryContact = socialLinks.gmail ? `mailto:${socialLinks.gmail}` : (socialLinks.github || '#');
 
-  const techStack = ['HTML5', 'CSS', 'JavaScript', 'TypeScript', 'Node.js', 'React', 'Next.js', 'Git', 'GitHub', 'MongoDB'];
+  const techStack = ['Next.js 16', 'React 19', 'TypeScript', 'Node.js', 'Python', 'MongoDB', 'Three.js', 'Tailwind CSS', 'Docker', 'Git'];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0F172A', color: '#F8FAFC', position: 'relative', overflowX: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', color: 'var(--text-primary)', position: 'relative' }}>
       
-      {/* === TOP NAVIGATION HEADER === */}
-      <header style={{
-        padding: '1.25rem 2rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
-        background: 'rgba(15, 23, 42, 0.9)',
-        backdropFilter: 'blur(20px)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link href="/team" style={{
-            display: 'flex', alignItems: 'center', gap: '6px',
-            color: '#94A3B8', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600,
-            transition: 'color 0.2s',
-          }}>
-            <ArrowLeft size={16} /> Back to Team
+      {/* Top Header Navigation */}
+      <header
+        style={{
+          padding: '1.25rem 2rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderBottom: '1px solid var(--border-subtle)',
+          background: 'var(--bg-surface)',
+          backdropFilter: 'blur(16px)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 50,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+          <Link
+            href="/team"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: 'var(--text-secondary)',
+              textDecoration: 'none',
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+            }}
+            className="editorial-link-hover"
+          >
+            <ArrowLeft size={16} /> BACK TO TEAM
           </Link>
-          <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-          <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#F8FAFC', letterSpacing: '-0.02em' }}>
-            {member.name}
+          <span style={{ color: 'var(--border-subtle)' }}>|</span>
+          <span className="editorial-metadata" style={{ color: '#EC170F' }}>
+            ENGINEER SPEC // {member.name.toUpperCase()}
           </span>
         </div>
-
-        <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }} className="hidden-mobile">
-          <a href="#hero" style={{ color: '#F8FAFC', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 600 }}>Home</a>
-          <a href="#about" style={{ color: '#94A3B8', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>About</a>
-          <a href="#projects" style={{ color: '#94A3B8', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>Projects</a>
-          <a href="#contacts" style={{ color: '#94A3B8', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>Contacts</a>
-        </nav>
       </header>
 
-      {/* === HERO SECTION (IMAGE MATCH: Coral Ring & Angle Brackets) === */}
-      <section id="hero" style={{ maxWidth: '1200px', margin: '0 auto', padding: '5rem 2rem 4rem', position: 'relative' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '3rem',
-          alignItems: 'center',
-        }}>
-          {/* Left Text Block */}
+      {/* Hero Section */}
+      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '6rem 2rem 4rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '4rem',
+            alignItems: 'center',
+          }}
+        >
+          {/* Left Text */}
           <div>
-            <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: '0.5rem', color: '#FFFFFF' }}>
-              Hello <span style={{ color: '#EC170F', display: 'inline-block' }}>.</span>
+            <div className="editorial-metadata" style={{ color: '#EC170F', marginBottom: '1rem' }}>
+              02 — DEVELOPER PROFILE
+            </div>
+
+            <h1
+              className="editorial-display-heading"
+              style={{
+                fontSize: 'clamp(3rem, 7.5vw, 6.5rem)',
+                marginBottom: '1rem',
+                color: 'var(--text-primary)',
+              }}
+            >
+              {member.name}
             </h1>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '1rem 0 1.25rem' }}>
-              <div style={{ width: '40px', height: '2px', background: '#EC170F' }} />
-              <span style={{ fontSize: '1.5rem', color: '#E2E8F0', fontWeight: 500 }}>
-                I&apos;m {member.name}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '2rem' }}>
+              <span className="editorial-metadata" style={{ color: 'var(--text-muted)' }}>
+                ROLE: {member.role === 'ADMIN' ? 'LEAD SOFTWARE ARCHITECT' : 'FULL STACK ENGINEER'}
+              </span>
+              <span style={{ color: '#EC170F' }}>•</span>
+              <span className="editorial-metadata" style={{ color: '#EC170F' }}>
+                STATUS: ACTIVE
               </span>
             </div>
 
-            <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', fontWeight: 900, color: '#FFFFFF', marginBottom: '2.5rem', letterSpacing: '-0.02em' }}>
-              {member.role === 'ADMIN' ? 'Lead Software Architect' : 'Software Developer'}
-            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: '2.5rem', maxWidth: '600px' }}>
+              Passionate about full-stack engineering, clean architectural patterns, high-performance web systems, and collaborative innovation.
+            </p>
 
-            {/* Action CTAs */}
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href={primaryContact} target="_blank" rel="noopener noreferrer" style={{
-                padding: '12px 28px', borderRadius: '8px',
-                background: '#EC170F', color: '#FFFFFF',
-                fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem',
-                boxShadow: '0 8px 25px rgba(236, 23, 15, 0.4)',
-                transition: 'all 0.2s ease',
-                display: 'inline-flex', alignItems: 'center', gap: '8px',
-              }}>
-                Got a project?
+              <a href={primaryContact} target="_blank" rel="noopener noreferrer" className="editorial-btn-primary">
+                <span>GET IN TOUCH</span>
+                <ArrowUpRight size={16} />
               </a>
               {socialLinks.github && (
-                <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" style={{
-                  padding: '12px 24px', borderRadius: '8px',
-                  background: 'transparent', color: '#FFFFFF',
-                  fontWeight: 600, textDecoration: 'none', fontSize: '0.95rem',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  transition: 'all 0.2s ease',
-                  display: 'inline-flex', alignItems: 'center', gap: '8px',
-                }}>
-                  <GithubIcon size={16} /> GitHub Profile
+                <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="editorial-btn-secondary">
+                  <GithubIcon size={16} />
+                  <span>GITHUB</span>
                 </a>
               )}
             </div>
           </div>
 
-          {/* Right Avatar Frame (Exact Image Theme: Halo Circle & Angle Brackets) */}
-          <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
-            {/* SVG Angle Bracket Left `<` */}
-            <div style={{
-              position: 'absolute', top: '15%', left: '0%',
-              fontSize: '4rem', fontWeight: 300, color: 'rgba(236, 23, 15, 0.35)',
-              fontFamily: 'monospace', pointerEvents: 'none',
-              transform: 'scaleY(1.4)',
-            }}>
-              &lt;
-            </div>
-
-            {/* SVG Angle Bracket Right `>` */}
-            <div style={{
-              position: 'absolute', bottom: '15%', right: '0%',
-              fontSize: '4rem', fontWeight: 300, color: 'rgba(236, 23, 15, 0.35)',
-              fontFamily: 'monospace', pointerEvents: 'none',
-              transform: 'scaleY(1.4)',
-            }}>
-              &gt;
-            </div>
-
-            {/* Coral Halo Ring */}
-            <div style={{
-              width: '320px',
-              height: '320px',
-              borderRadius: '50%',
-              padding: '12px',
-              background: 'radial-gradient(circle, rgba(236, 23, 15, 0.2) 0%, rgba(236, 23, 15, 0.05) 70%, transparent 100%)',
-              border: '3px solid #EC170F',
-              boxShadow: '0 0 60px rgba(236, 23, 15, 0.35), inset 0 0 30px rgba(236, 23, 15, 0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              {member.profilePic ? (
-                <img
-                  src={member.profilePic}
-                  alt={member.name}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                  }}
-                />
-              ) : (
-                <div style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  background: `linear-gradient(135deg, hsl(${hue},70%,50%), hsl(${(hue + 60) % 360},70%,50%))`,
+          {/* Right Avatar Frame */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {member.profilePic ? (
+              <img
+                src={member.profilePic}
+                alt={member.name}
+                style={{
+                  width: '280px',
+                  height: '320px',
+                  objectFit: 'cover',
+                  border: '3px solid #EC170F',
+                  filter: 'brightness(0.95) contrast(1.1)',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: '280px',
+                  height: '320px',
+                  background: `linear-gradient(135deg, hsl(${hue},70%,40%), hsl(${(hue + 60) % 360},70%,30%))`,
+                  border: '3px solid #EC170F',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '4.5rem',
-                  fontWeight: 800,
+                  fontSize: '5rem',
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 900,
                   color: 'white',
-                }}>
-                  {initials}
-                </div>
-              )}
-            </div>
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+                }}
+              >
+                {initials}
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* === TECH STACK STRIP === */}
-      <section style={{
-        background: '#0B132B',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-        padding: '1.5rem 2rem',
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-around', flexWrap: 'wrap', gap: '1.5rem' }}>
-          {techStack.map((tech) => (
-            <span key={tech} style={{ color: '#94A3B8', fontSize: '0.95rem', fontWeight: 600, letterSpacing: '0.05em' }}>
-              {tech}
-            </span>
-          ))}
+      {/* Tech Marquee Strip */}
+      <section style={{ borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)', padding: '1.5rem 2rem', background: 'var(--bg-surface)' }}>
+        <div style={{ maxWidth: '1320px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem' }}>
+          <span className="editorial-metadata" style={{ color: '#EC170F' }}>TECHNICAL STACK</span>
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+            {techStack.map((tech) => (
+              <span key={tech} className="editorial-metadata" style={{ color: 'var(--text-primary)' }}>
+                {tech}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* === ABOUT ME SECTION (IMAGE MATCH: Timeline Dots + Bio + Stats) === */}
-      <section id="about" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem' }}>
-          
-          {/* Left Vertical Services with Timeline Red Dots */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            {[
-              { icon: Globe, title: 'Website Development', desc: 'Crafting responsive, high-performance web applications.' },
-              { icon: Code2, title: 'App & API Architecture', desc: 'Scalable backend services, RESTful APIs & database optimization.' },
-              { icon: Server, title: 'Cloud Hosting & DevOps', desc: 'Continuous integration, deployment pipelines, and cloud setup.' },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.title} style={{ display: 'flex', alignItems: 'flex-start', gap: '1.25rem', position: 'relative' }}>
-                  {/* Vertical line indicator with Red Dot */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
-                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#EC170F', boxShadow: '0 0 10px #EC170F' }} />
-                    {i < 2 && <div style={{ width: '2px', height: '50px', background: 'rgba(236, 23, 15, 0.3)', marginTop: '4px' }} />}
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '0.3rem' }}>
-                      {item.title}
-                    </h3>
-                    <p style={{ color: '#94A3B8', fontSize: '0.875rem', lineHeight: 1.6 }}>
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+      {/* Member Projects */}
+      <section style={{ maxWidth: '1320px', margin: '0 auto', padding: '6rem 2rem' }}>
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+            <span className="editorial-section-number">PROJECTS</span>
+            <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
+            <span className="editorial-metadata">[{projects.length} ASSIGNED]</span>
           </div>
 
-          {/* Right Bio & Stats */}
+          <h2 className="editorial-display-heading" style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)' }}>
+            CONTRIBUTED <span style={{ color: '#EC170F' }}>WORK.</span>
+          </h2>
+        </div>
+
+        {projects.length > 0 ? (
           <div>
-            <h2 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '1.5rem' }}>
-              About me
-            </h2>
-            <p style={{ color: '#94A3B8', fontSize: '1rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>
-              I started my engineering journey building software and solving complex challenges under pressure. As a core member of Innovation Collaboration, I love turning creative concepts into robust, production-ready code.
-            </p>
-
-            {/* Quick Stats Grid */}
-            <div style={{ display: 'flex', gap: '2.5rem', flexWrap: 'wrap' }}>
-              <div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  {projects.length > 0 ? projects.length : '10'}<span style={{ color: '#EC170F' }}>+</span>
-                </div>
-                <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Completed Projects
-                </div>
-              </div>
-
-              <div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  98<span style={{ color: '#EC170F' }}>%</span>
-                </div>
-                <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Client Satisfaction
-                </div>
-              </div>
-
-              <div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  Active<span style={{ color: '#EC170F' }}>+</span>
-                </div>
-                <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Team Role ({member.role})
-                </div>
-              </div>
-            </div>
+            {projects.map((project: any, idx: number) => (
+              <ProjectCard key={project._id} project={project} index={idx} />
+            ))}
           </div>
-
-        </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '5rem 0', color: 'var(--text-muted)' }}>
+            <Code2 size={40} style={{ marginBottom: '1rem', opacity: 0.3 }} />
+            <p style={{ fontFamily: 'JetBrains Mono, monospace' }}>NO PUBLIC PROJECTS ASSIGNED YET.</p>
+          </div>
+        )}
       </section>
 
-      {/* === MEMBER PROJECTS SECTION === */}
-      <section id="projects" style={{ background: '#0B132B', padding: '6rem 2rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <h2 style={{ fontSize: '2.25rem', fontWeight: 900, color: '#FFFFFF', marginBottom: '0.75rem' }}>
-              Projects
-            </h2>
-            <div style={{ width: '40px', height: '3px', background: '#EC170F', margin: '0 auto' }} />
-          </div>
-
-          {projects.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-              {projects.map((project: any) => (
-                <ProjectCard key={project._id} project={project} />
-              ))}
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', color: '#94A3B8', padding: '3rem 0' }}>
-              <Code2 size={40} style={{ marginBottom: '1rem', opacity: 0.4 }} />
-              <p>No public projects assigned to {member.name} yet.</p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* === CONTACT / FOOTER STRIP === */}
-      <footer id="contacts" style={{ padding: '3rem 2rem', borderTop: '1px solid rgba(255,255,255,0.08)', background: '#090F1E', textAlign: 'center' }}>
+      {/* Contact Footer */}
+      <footer style={{ padding: '4rem 2rem', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
         <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-          <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '1rem' }}>
-            Connect with {member.name}
+          <h3 className="editorial-display-heading" style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>
+            CONNECT WITH {member.name.toUpperCase()}
           </h3>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', margin: '1.5rem 0' }}>
+
+          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', marginBottom: '2rem' }}>
             {socialLinks.github && (
-              <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" style={{
-                width: '44px', height: '44px', borderRadius: '50%',
-                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F8FAFC',
-                textDecoration: 'none', transition: 'all 0.2s',
-              }}>
-                <GithubIcon size={18} />
+              <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)' }}>
+                <GithubIcon size={20} />
               </a>
             )}
             {socialLinks.linkedin && (
-              <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" style={{
-                width: '44px', height: '44px', borderRadius: '50%',
-                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60A5FA',
-                textDecoration: 'none', transition: 'all 0.2s',
-              }}>
-                <LinkedinIcon size={18} />
+              <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)' }}>
+                <LinkedinIcon size={20} />
               </a>
             )}
             {socialLinks.instagram && (
-              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" style={{
-                width: '44px', height: '44px', borderRadius: '50%',
-                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F472B6',
-                textDecoration: 'none', transition: 'all 0.2s',
-              }}>
-                <InstagramIcon size={18} />
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)' }}>
+                <InstagramIcon size={20} />
               </a>
             )}
             {socialLinks.gmail && (
-              <a href={`mailto:${socialLinks.gmail}`} style={{
-                width: '44px', height: '44px', borderRadius: '50%',
-                background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4ADE80',
-                textDecoration: 'none', transition: 'all 0.2s',
-              }}>
-                <Mail size={18} />
+              <a href={`mailto:${socialLinks.gmail}`} style={{ color: 'var(--text-primary)' }}>
+                <Mail size={20} />
               </a>
             )}
           </div>
-          <p style={{ color: '#64748B', fontSize: '0.85rem' }}>
-            © {new Date().getFullYear()} Innovation Collaboration • {member.name}&apos;s Portfolio
-          </p>
+
+          <span className="editorial-metadata">
+            © {new Date().getFullYear()} TECH TEAM STUDIO • {member.name.toUpperCase()}
+          </span>
         </div>
       </footer>
     </div>

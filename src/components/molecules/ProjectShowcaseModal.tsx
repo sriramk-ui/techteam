@@ -43,9 +43,7 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
 
   const status = statusConfig[project.status] || statusConfig.Active;
   const StatusIcon = status.Icon;
-  const mainUrl = project.projectUrl || project.demoUrl || project.githubUrl;
 
-  // Infer tech tags if explicit tags array is absent
   const inferredTags = project.tags && project.tags.length > 0 ? project.tags : (() => {
     const text = `${project.title} ${project.description}`.toLowerCase();
     const tags: string[] = [];
@@ -59,33 +57,37 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
 
   return (
     <div
-      className="warp-backdrop"
       onClick={onClose}
       style={{
         position: 'fixed', inset: 0, zIndex: 300,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '1rem', background: 'rgba(5, 5, 12, 0.82)', backdropFilter: 'blur(12px)',
+        padding: '1rem', background: 'rgba(7, 6, 14, 0.88)', backdropFilter: 'blur(16px)',
       }}
     >
       <div
-        className="warp-modal-card glass-strong"
         onClick={(e) => e.stopPropagation()}
         style={{
-          borderRadius: '24px', padding: '2.5rem 2rem',
-          width: '100%', maxWidth: '640px', maxHeight: '90vh', overflowY: 'auto',
-          border: '1px solid rgba(236, 23, 15, 0.3)',
-          background: 'linear-gradient(145deg, rgba(20, 20, 35, 0.95), rgba(8, 8, 18, 0.98))',
-          boxShadow: '0 25px 70px rgba(0,0,0,0.6), 0 0 50px rgba(236, 23, 15, 0.15)',
+          borderRadius: '2px',
+          padding: '2.5rem',
+          width: '100%',
+          maxWidth: '680px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          border: '1px solid #EC170F',
+          background: 'var(--bg-card)',
+          color: 'var(--text-primary)',
+          boxShadow: '0 25px 70px rgba(0,0,0,0.5)',
           position: 'relative',
         }}
+        className="animate-fade-in-up"
       >
         {/* Close Button */}
         <button
           onClick={onClose}
           style={{
-            position: 'absolute', top: '1.25rem', right: '1.25rem',
-            background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border-subtle)',
-            borderRadius: '50%', width: '36px', height: '36px',
+            position: 'absolute', top: '1.5rem', right: '1.5rem',
+            background: 'transparent', border: '1px solid var(--border-subtle)',
+            width: '36px', height: '36px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s',
           }}
@@ -95,35 +97,37 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
           <X size={18} />
         </button>
 
-        {/* Top Kicker Tag */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}>
-          <Sparkles size={16} color="#EC170F" />
-          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#EC170F', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            Project Showcase
-          </span>
+        {/* Top Editorial Kicker Tag */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+          <span className="editorial-section-number">PROJECT SPECIFICATIONS</span>
         </div>
 
         {/* Title & Badges */}
-        <div style={{ marginBottom: '1.25rem' }}>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.2, marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h2
+            className="editorial-display-heading"
+            style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', marginBottom: '0.75rem', color: 'var(--text-primary)' }}
+          >
             {project.title}
           </h2>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '5px',
-              padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 700,
+              padding: '4px 12px', fontSize: '0.72rem', fontWeight: 700,
+              fontFamily: 'JetBrains Mono, monospace',
               background: status.bg, border: `1px solid ${status.border}`, color: status.color,
             }}>
-              <StatusIcon size={12} /> {project.status}
+              <StatusIcon size={12} /> {project.status.toUpperCase()}
             </span>
 
             {project.visibility && (
               <span style={{
-                padding: '4px 10px', borderRadius: '20px', fontSize: '0.7rem', fontWeight: 700,
-                background: project.visibility === 'private' ? 'rgba(239,68,68,0.12)' : 'rgba(16,185,129,0.12)',
-                border: `1px solid ${project.visibility === 'private' ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`,
-                color: project.visibility === 'private' ? '#fca5a5' : '#6ee7b7',
-                textTransform: 'uppercase', letterSpacing: '0.05em',
+                padding: '4px 10px', fontSize: '0.7rem', fontWeight: 700,
+                fontFamily: 'JetBrains Mono, monospace',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid var(--border-subtle)',
+                color: 'var(--text-muted)',
+                textTransform: 'uppercase',
               }}>
                 {project.visibility}
               </span>
@@ -132,56 +136,58 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
         </div>
 
         {/* Progress Bar */}
-        <div style={{ marginBottom: '1.5rem', padding: '1rem', borderRadius: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)' }}>
+        <div style={{ marginBottom: '1.75rem', padding: '1.25rem', background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)' }}>Project Development Progress</span>
-            <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#EC170F' }}>{project.progress}%</span>
+            <span className="editorial-metadata">DEVELOPMENT PROGRESS</span>
+            <span style={{ fontSize: '0.85rem', fontFamily: 'JetBrains Mono, monospace', fontWeight: 800, color: '#EC170F' }}>
+              {project.progress}%
+            </span>
           </div>
-          <div style={{ height: '6px', borderRadius: '3px', background: 'rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+          <div style={{ height: '4px', background: 'var(--border-subtle)', overflow: 'hidden' }}>
             <div style={{
               height: '100%', width: `${project.progress}%`,
-              borderRadius: '3px',
-              background: 'linear-gradient(90deg, #EC170F, #0B3B9B)',
+              background: '#EC170F',
               transition: 'width 1s ease',
             }} />
           </div>
         </div>
 
-        {/* Full Description */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
-            Overview & Specifications
+        {/* Overview */}
+        <div style={{ marginBottom: '1.75rem' }}>
+          <h4 className="editorial-metadata" style={{ marginBottom: '0.5rem', color: '#EC170F' }}>
+            OVERVIEW
           </h4>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>
             {project.description}
           </p>
         </div>
 
-        {/* Notes (if available) */}
+        {/* Notes */}
         {project.notes && (
-          <div style={{ marginBottom: '1.5rem', padding: '1rem', borderRadius: '12px', background: 'rgba(11,59,155,0.1)', border: '1px solid rgba(11,59,155,0.3)' }}>
-            <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>
-              Key Features & Notes
+          <div style={{ marginBottom: '1.75rem', padding: '1rem', background: 'rgba(11,59,155,0.1)', border: '1px solid rgba(11,59,155,0.3)' }}>
+            <h4 className="editorial-metadata" style={{ color: '#0B3B9B', marginBottom: '0.4rem' }}>
+              KEY ARCHITECTURE NOTES
             </h4>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }}>
               {project.notes}
             </p>
           </div>
         )}
 
-        {/* Tech Stack Badges */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <Layers size={12} /> Tech Stack & Architecture
+        {/* Tech Stack */}
+        <div style={{ marginBottom: '1.75rem' }}>
+          <h4 className="editorial-metadata" style={{ marginBottom: '0.75rem' }}>
+            TECH STACK & ARCHITECTURE
           </h4>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {inferredTags.map((tag, idx) => (
               <span
                 key={idx}
                 style={{
-                  padding: '5px 12px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600,
+                  padding: '5px 12px', fontSize: '0.75rem', fontWeight: 700,
+                  fontFamily: 'JetBrains Mono, monospace',
                   background: 'rgba(236,23,15,0.08)', border: '1px solid rgba(236,23,15,0.25)',
-                  color: '#fca5a5',
+                  color: 'var(--text-primary)',
                 }}
               >
                 {tag}
@@ -190,11 +196,11 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
           </div>
         </div>
 
-        {/* Assigned Team Members */}
+        {/* Assigned Engineers */}
         {project.assignedMembers && project.assignedMembers.length > 0 && (
           <div style={{ marginBottom: '2rem' }}>
-            <h4 style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Users size={12} /> Assigned Engineers ({project.assignedMembers.length})
+            <h4 className="editorial-metadata" style={{ marginBottom: '0.75rem' }}>
+              ASSIGNED ENGINEERS ({project.assignedMembers.length})
             </h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {project.assignedMembers.map((m) => (
@@ -204,24 +210,16 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
                   onClick={onClose}
                   style={{
                     display: 'inline-flex', alignItems: 'center', gap: '8px',
-                    padding: '6px 14px', borderRadius: '12px',
-                    background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-primary)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600,
+                    padding: '8px 14px',
+                    background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)',
+                    color: 'var(--text-primary)', textDecoration: 'none',
+                    fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', fontWeight: 700,
                     transition: 'all 0.2s',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#EC170F'; e.currentTarget.style.color = '#EC170F'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+                  className="editorial-link-hover"
                 >
-                  <div style={{
-                    width: '24px', height: '24px', borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #EC170F, #0B3B9B)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '0.7rem', fontWeight: 800, color: 'white',
-                  }}>
-                    {m.name.charAt(0).toUpperCase()}
-                  </div>
                   <span>{m.name}</span>
-                  <ArrowUpRight size={12} style={{ opacity: 0.5 }} />
+                  <ArrowUpRight size={12} style={{ color: '#EC170F' }} />
                 </Link>
               ))}
             </div>
@@ -229,15 +227,16 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
         )}
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', paddingTop: '1.5rem', borderTop: '1px solid var(--border-subtle)' }}>
           {project.projectUrl && (
             <a
               href={project.projectUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="showcase-btn-primary"
+              className="editorial-btn-primary"
+              style={{ padding: '10px 20px', fontSize: '0.78rem' }}
             >
-              <Link2 size={16} /> Visit Project Web
+              <Link2 size={15} /> VISIT WEBSITE
             </a>
           )}
           {project.demoUrl && (
@@ -245,9 +244,10 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
               href={project.demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="showcase-btn-secondary"
+              className="editorial-btn-secondary"
+              style={{ padding: '10px 20px', fontSize: '0.78rem' }}
             >
-              <ExternalLink size={16} /> Live Demo
+              <ExternalLink size={15} /> LIVE DEMO
             </a>
           )}
           {project.githubUrl && (
@@ -255,78 +255,27 @@ export default function ProjectShowcaseModal({ project, onClose, onVaultClick }:
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="showcase-btn-ghost"
+              className="editorial-btn-secondary"
+              style={{ padding: '10px 20px', fontSize: '0.78rem' }}
             >
-              <GithubIcon size={16} /> GitHub Code
+              <GithubIcon size={15} /> REPOSITORY
             </a>
           )}
           {onVaultClick && (
             <button
               onClick={() => { onClose(); onVaultClick(project._id, project.title); }}
-              className="showcase-btn-vault"
+              style={{
+                padding: '10px 20px', fontSize: '0.78rem',
+                background: 'rgba(236,23,15,0.1)', border: '1px solid #EC170F',
+                color: '#EC170F', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
+              }}
             >
-              <Shield size={15} /> Project Vault
+              <Shield size={14} /> VAULT
             </button>
           )}
         </div>
       </div>
-
-      <style>{`
-        .warp-backdrop {
-          animation: fadeIn 0.25s ease-out;
-        }
-        .warp-modal-card {
-          animation: warpScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes warpScale {
-          from { opacity: 0; transform: scale(0.85) translateY(20px); filter: blur(8px); }
-          to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-        .showcase-btn-primary {
-          display: inline-flex; alignItems: center; gap: 8px;
-          padding: 12px 22px; border-radius: 12px; border: none;
-          background: linear-gradient(135deg, #EC170F, #0B3B9B);
-          color: white; font-weight: 700; font-size: 0.9rem; text-decoration: none;
-          box-shadow: 0 8px 24px rgba(236, 23, 15, 0.3); transition: all 0.2s;
-        }
-        .showcase-btn-primary:hover {
-          transform: translateY(-2px); box-shadow: 0 12px 30px rgba(236, 23, 15, 0.45);
-        }
-        .showcase-btn-secondary {
-          display: inline-flex; alignItems: center; gap: 8px;
-          padding: 12px 20px; border-radius: 12px;
-          background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35);
-          color: #6ee7b7; font-weight: 700; font-size: 0.9rem; text-decoration: none;
-          transition: all 0.2s;
-        }
-        .showcase-btn-secondary:hover {
-          background: rgba(16,185,129,0.22); transform: translateY(-2px);
-        }
-        .showcase-btn-ghost {
-          display: inline-flex; alignItems: center; gap: 8px;
-          padding: 12px 20px; border-radius: 12px;
-          background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle);
-          color: var(--text-secondary); font-weight: 700; font-size: 0.9rem; text-decoration: none;
-          transition: all 0.2s;
-        }
-        .showcase-btn-ghost:hover {
-          color: white; border-color: rgba(255,255,255,0.3); transform: translateY(-2px);
-        }
-        .showcase-btn-vault {
-          display: inline-flex; alignItems: center; gap: 8px;
-          padding: 12px 20px; border-radius: 12px;
-          background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25);
-          color: #fca5a5; font-weight: 700; font-size: 0.9rem; cursor: pointer;
-          transition: all 0.2s;
-        }
-        .showcase-btn-vault:hover {
-          background: rgba(239,68,68,0.2); transform: translateY(-2px);
-        }
-      `}</style>
     </div>
   );
 }

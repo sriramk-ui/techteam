@@ -11,6 +11,7 @@ export interface IProject extends Document {
   projectUrl?: string;
   assignedMembers: mongoose.Types.ObjectId[];
   notes?: string;
+  coverImage?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,6 +28,7 @@ const ProjectSchema: Schema = new Schema(
     projectUrl: { type: String },
     assignedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     notes: { type: String },
+    coverImage: { type: String, default: '' },
   },
   { timestamps: true }
 );

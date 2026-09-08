@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Mail, ArrowRight } from 'lucide-react';
+import { Mail, ArrowUpRight } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, InstagramIcon } from '@/components/atoms/icons';
 
 interface MemberCardProps {
@@ -17,171 +17,201 @@ interface MemberCardProps {
       gmail?: string;
     };
   };
+  index?: number;
 }
 
-const roleColors = {
-  ADMIN: { bg: 'rgba(236,23,15,0.1)', border: 'rgba(236,23,15,0.3)', color: '#EC170F', label: 'Admin' },
-  MEMBER: { bg: 'rgba(11,59,155,0.1)', border: 'rgba(11,59,155,0.3)', color: '#0B3B9B', label: 'Member' },
-};
-
 const socialIcons = [
-  { key: 'github', Icon: GithubIcon, color: '#07060E' },
-  { key: 'linkedin', Icon: LinkedinIcon, color: '#0B3B9B' },
-  { key: 'instagram', Icon: InstagramIcon, color: '#EC170F' },
-  { key: 'gmail', Icon: Mail, color: '#10b981' },
+  { key: 'github', Icon: GithubIcon, label: 'GitHub' },
+  { key: 'linkedin', Icon: LinkedinIcon, label: 'LinkedIn' },
+  { key: 'instagram', Icon: InstagramIcon, label: 'Instagram' },
+  { key: 'gmail', Icon: Mail, label: 'Gmail' },
 ];
 
-export default function MemberCard({ member }: MemberCardProps) {
+export default function MemberCard({ member, index = 0 }: MemberCardProps) {
   const initials = member.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  const roleStyle = roleColors[member.role] || roleColors.MEMBER;
   const hue = member.name.charCodeAt(0) * 137 % 360;
+  const memberNum = String(index + 1).padStart(2, '0');
 
   return (
     <div
-      className="glow-border card-shine member-card"
       style={{
         background: 'var(--bg-card)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '1.75rem 1.25rem',
+        border: '1px solid var(--border-subtle)',
+        padding: '2.5rem 2rem',
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        height: '290px',
         justifyContent: 'space-between',
+        minHeight: '380px',
+        transition: 'all 0.3s ease',
       }}
+      className="editorial-member-card"
     >
-      {/* Whole Card Click Ghost Link to Member Portfolio */}
+      {/* Ghost link to member portfolio */}
       <Link
         href={`/team/${member._id}`}
-        className="card-ghost-link"
+        style={{ position: 'absolute', inset: 0, zIndex: 1 }}
         title={`View ${member.name}'s Portfolio`}
       />
 
-      {/* Avatar with Halo Ring */}
-      {member.profilePic ? (
-        <img
-          src={member.profilePic}
-          alt={member.name}
-          style={{
-            width: '80px', height: '80px', borderRadius: '50%',
-            objectFit: 'cover', marginBottom: '0.75rem', flexShrink: 0,
-            boxShadow: `0 0 25px rgba(236,23,15,0.25)`,
-            border: `3px solid #EC170F`,
-            position: 'relative', zIndex: 2, pointerEvents: 'none',
-          }}
-        />
-      ) : (
-        <div style={{
-          width: '80px', height: '80px', borderRadius: '50%',
-          background: `linear-gradient(135deg, hsl(${hue},70%,50%), hsl(${(hue + 60) % 360},70%,50%))`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '1.5rem', fontWeight: 800, color: 'white',
-          marginBottom: '0.75rem',
-          boxShadow: `0 0 25px rgba(236,23,15,0.25)`,
-          border: `3px solid #EC170F`,
-          flexShrink: 0,
-          position: 'relative', zIndex: 2, pointerEvents: 'none',
-        }}>
-          {initials}
+      <div>
+        {/* Top Bar with Number & Role */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+          <span className="editorial-section-number">{memberNum}</span>
+          <span
+            style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              padding: '3px 10px',
+              border: `1px solid ${member.role === 'ADMIN' ? '#EC170F' : 'var(--border-subtle)'}`,
+              color: member.role === 'ADMIN' ? '#EC170F' : 'var(--text-muted)',
+              textTransform: 'uppercase',
+            }}
+          >
+            {member.role === 'ADMIN' ? 'LEAD ARCHITECT' : 'CORE ENGINEER'}
+          </span>
         </div>
-      )}
 
-      {/* Name */}
-      <h3 style={{
-        fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)',
-        marginBottom: '0.3rem', position: 'relative', zIndex: 2, pointerEvents: 'none',
-        display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
-        overflow: 'hidden', textOverflow: 'ellipsis', height: '1.4rem', margin: '0 0 0.3rem 0',
-      }}>
-        {member.name}
-      </h3>
-
-      {/* Role Badge */}
-      <span style={{
-        display: 'inline-block',
-        padding: '3px 10px',
-        borderRadius: '20px',
-        fontSize: '0.72rem',
-        fontWeight: 700,
-        letterSpacing: '0.05em',
-        textTransform: 'uppercase',
-        background: roleStyle.bg,
-        border: `1px solid ${roleStyle.border}`,
-        color: roleStyle.color,
-        marginBottom: '0.75rem',
-        position: 'relative', zIndex: 2, pointerEvents: 'none',
-      }}>
-        {roleStyle.label}
-      </span>
-
-      {/* Social Links */}
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', position: 'relative', zIndex: 3, height: '32px', marginBottom: '0.5rem' }}>
-        {member.socialLinks && socialIcons.map(({ key, Icon }) => {
-          const url = member.socialLinks?.[key as keyof typeof member.socialLinks];
-          if (!url) return null;
-          const href = key === 'gmail' ? `mailto:${url}` : url;
-          return (
-            <a
-              key={key}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={key}
-              className="social-btn"
-              onClick={(e) => e.stopPropagation()}
+        {/* Asymmetric Avatar Frame */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.75rem' }}>
+          {member.profilePic ? (
+            <img
+              src={member.profilePic}
+              alt={member.name}
+              style={{
+                width: '84px',
+                height: '84px',
+                objectFit: 'cover',
+                border: '2px solid #EC170F',
+                filter: 'brightness(0.95) contrast(1.05)',
+                position: 'relative',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '84px',
+                height: '84px',
+                background: `linear-gradient(135deg, hsl(${hue},70%,40%), hsl(${(hue + 60) % 360},70%,30%))`,
+                border: '2px solid #EC170F',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.8rem',
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 900,
+                color: 'white',
+                position: 'relative',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
             >
-              <Icon size={14} />
-            </a>
-          );
-        })}
+              {initials}
+            </div>
+          )}
+
+          <div>
+            <h3
+              className="editorial-display-heading"
+              style={{
+                fontSize: '1.4rem',
+                color: 'var(--text-primary)',
+                marginBottom: '4px',
+                lineHeight: 1.1,
+                position: 'relative',
+                zIndex: 2,
+                pointerEvents: 'none',
+              }}
+            >
+              {member.name}
+            </h3>
+            <span
+              className="editorial-metadata"
+              style={{ fontSize: '0.72rem', color: '#EC170F', position: 'relative', zIndex: 2, pointerEvents: 'none' }}
+            >
+              FULL STACK / SYSTEMS
+            </span>
+          </div>
+        </div>
+
+        <p
+          style={{
+            color: 'var(--text-secondary)',
+            fontSize: '0.88rem',
+            lineHeight: 1.6,
+            marginBottom: '1.5rem',
+            position: 'relative',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        >
+          Specialized in full-stack architecture, high-performance web platforms, and automated system workflows.
+        </p>
       </div>
 
-      {/* View Portfolio Button */}
-      <div style={{ marginTop: 'auto', position: 'relative', zIndex: 2, pointerEvents: 'none' }}>
-        <span className="view-profile-link" style={{
-          display: 'inline-flex', alignItems: 'center', gap: '6px',
-          color: '#EC170F', fontSize: '0.85rem', fontWeight: 700,
-          transition: 'gap 0.2s',
-        }}>
-          View Profile <ArrowRight size={14} />
+      {/* Social Links & CTA */}
+      <div
+        style={{
+          borderTop: '1px solid var(--border-subtle)',
+          paddingTop: '1.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'relative',
+          zIndex: 3,
+        }}
+      >
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {member.socialLinks && socialIcons.map(({ key, Icon }) => {
+            const url = member.socialLinks?.[key as keyof typeof member.socialLinks];
+            if (!url) return null;
+            const href = key === 'gmail' ? `mailto:${url}` : url;
+            return (
+              <a
+                key={key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={key}
+                style={{
+                  color: 'var(--text-muted)',
+                  transition: 'color 0.2s',
+                }}
+                onClick={(e) => e.stopPropagation()}
+                className="editorial-social-icon"
+              >
+                <Icon size={16} />
+              </a>
+            );
+          })}
+        </div>
+
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            color: '#EC170F',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '0.78rem',
+            fontWeight: 700,
+            pointerEvents: 'none',
+          }}
+        >
+          PORTFOLIO <ArrowUpRight size={14} />
         </span>
       </div>
 
       <style>{`
-        .member-card {
-          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        .editorial-member-card:hover {
+          border-color: #EC170F !important;
+          transform: translateY(-4px);
         }
-        .member-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 20px 50px rgba(11,59,155,0.12), 0 0 30px rgba(236,23,15,0.2);
-          border-color: rgba(236,23,15,0.5);
-        }
-        .member-card:hover .view-profile-link {
-          gap: 10px;
-        }
-        .card-ghost-link {
-          position: absolute;
-          inset: 0;
-          z-index: 1;
-          cursor: pointer;
-        }
-        .social-btn {
-          width: 32px; height: 32px;
-          background: rgba(11,59,155,0.06);
-          border: 1px solid var(--border-subtle);
-          border-radius: 8px;
-          display: flex; align-items: center; justify-content: center;
-          color: var(--text-secondary);
-          transition: all 0.2s;
-          text-decoration: none;
-        }
-        .social-btn:hover {
-          color: #EC170F;
-          border-color: rgba(236,23,15,0.5);
-          background: rgba(236,23,15,0.1);
+        .editorial-social-icon:hover {
+          color: #EC170F !important;
         }
       `}</style>
     </div>

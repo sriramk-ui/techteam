@@ -22,8 +22,8 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
 
   return (
     <>
-      {/* Status filter pills */}
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+      {/* Editorial Filter Pills */}
+      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '3rem' }}>
         {filterOptions.map((f) => {
           const isActive = activeFilter === f;
           return (
@@ -33,37 +33,32 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
               onClick={() => setActiveFilter(f)}
               style={{
                 padding: '8px 20px',
-                borderRadius: '20px',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                background: isActive ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${isActive ? 'rgba(139,92,246,0.6)' : 'var(--border-subtle)'}`,
-                color: isActive ? '#c4b5fd' : 'var(--text-muted)',
+                background: isActive ? '#EC170F' : 'transparent',
+                border: `1px solid ${isActive ? '#EC170F' : 'var(--border-subtle)'}`,
+                color: isActive ? '#FFFFFF' : 'var(--text-secondary)',
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
               }}
             >
-              {f}
+              [{f}]
             </button>
           );
         })}
       </div>
 
-      {/* Grid - using global animate-fade-in class from globals.css to ensure hydration safety */}
+      {/* Editorial Block List */}
       {filteredProjects.length > 0 ? (
-        <div 
-          key={activeFilter} // Key change ensures animation re-triggers on filter change
-          className="animate-fade-in"
-          style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-            gap: '1.25rem'
-          }}
-        >
-          {filteredProjects.map((project) => (
+        <div key={activeFilter} className="animate-fade-in">
+          {filteredProjects.map((project, idx) => (
             <ProjectCard
               key={project._id}
               project={project}
+              index={idx}
               onCardClick={(p) => setShowcaseProject(p)}
             />
           ))}
@@ -71,7 +66,7 @@ export default function ProjectList({ initialProjects }: ProjectListProps) {
       ) : (
         <div style={{ textAlign: 'center', padding: '5rem 0', color: 'var(--text-muted)' }}>
           <Code2 size={40} style={{ marginBottom: '1rem', opacity: 0.3 }} />
-          <p>No projects found in this category.</p>
+          <p style={{ fontFamily: 'JetBrains Mono, monospace' }}>NO PROJECTS FOUND IN THIS CATEGORY.</p>
         </div>
       )}
 

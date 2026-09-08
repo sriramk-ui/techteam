@@ -69,37 +69,53 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '12px 14px',
-    borderRadius: '10px',
     background: 'var(--bg-elevated)',
-    border: '1px solid var(--border-default)',
+    border: '1px solid var(--border-subtle)',
     color: 'var(--text-primary)',
     fontSize: '0.9rem',
     outline: 'none',
-    fontFamily: 'inherit',
+    fontFamily: 'JetBrains Mono, monospace',
+    borderRadius: '2px',
   };
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 250,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '1rem', background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(10px)',
-    }}>
-      <div className="glass-strong" style={{
-        borderRadius: '24px', padding: '2rem',
-        width: '100%', maxWidth: '520px', maxHeight: '90vh', overflowY: 'auto',
-        border: '1px solid var(--border-default)',
-        position: 'relative',
-      }}>
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 300,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '1rem', background: 'rgba(7, 6, 14, 0.88)', backdropFilter: 'blur(16px)',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          borderRadius: '2px',
+          padding: '2.5rem',
+          width: '100%',
+          maxWidth: '560px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          border: '1px solid #EC170F',
+          background: 'var(--bg-card)',
+          color: 'var(--text-primary)',
+          boxShadow: '0 25px 70px rgba(0,0,0,0.5)',
+          position: 'relative',
+        }}
+        className="animate-fade-in-up"
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
           style={{
-            position: 'absolute', top: '1.25rem', right: '1.25rem',
-            background: 'rgba(255,255,255,0.05)', border: 'none',
-            borderRadius: '50%', width: '32px', height: '32px',
+            position: 'absolute', top: '1.5rem', right: '1.5rem',
+            background: 'transparent', border: '1px solid var(--border-subtle)',
+            width: '36px', height: '36px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--text-muted)', cursor: 'pointer',
+            color: 'var(--text-muted)', cursor: 'pointer', transition: 'all 0.2s',
           }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = '#EC170F'; e.currentTarget.style.borderColor = '#EC170F'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}
         >
           <X size={18} />
         </button>
@@ -108,63 +124,55 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
           <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
             <div style={{
               width: '64px', height: '64px', borderRadius: '50%',
-              background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)',
-              color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(236,23,15,0.12)', border: '1px solid #EC170F',
+              color: '#EC170F', display: 'flex', alignItems: 'center', justifyContent: 'center',
               margin: '0 auto 1.5rem',
             }}>
               <CheckCircle size={32} />
             </div>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-              Quote Request Received!
+            <h3 className="editorial-display-heading" style={{ fontSize: '1.8rem', marginBottom: '0.75rem' }}>
+              INQUIRY RECEIVED
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-              Thank you, <strong>{name}</strong>. Our team has received your project details for <strong>{service}</strong> and will get back to you at <strong>{email}</strong> within 24 hours.
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '2rem' }}>
+              Thank you, <strong>{name}</strong>. Our team has received your inquiry for <strong>{service}</strong> and will get back to you at <strong>{email}</strong> within 24 hours.
             </p>
-            <button
-              onClick={onClose}
-              style={{
-                padding: '12px 28px', borderRadius: '12px', border: 'none',
-                background: 'linear-gradient(135deg, #8b5cf6, #06b6d4)',
-                color: 'white', fontWeight: 700, cursor: 'pointer',
-              }}
-            >
-              Done
+            <button onClick={onClose} className="editorial-btn-primary">
+              DONE
             </button>
           </div>
         ) : (
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.4rem' }}>
-              <Sparkles size={20} color="#EC170F" />
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#EC170F', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Client Project Inquiry
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}>
+              <span className="editorial-section-number">07 — INQUIRY</span>
             </div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
-              Request a Project Quote
+
+            <h2 className="editorial-display-heading" style={{ fontSize: '2.2rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+              INITIATE PROJECT.
             </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-              Let&apos;s build something extraordinary together. Fill out your requirements below:
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+              Fill out your project specifications below for a prompt response and timeline estimate:
             </p>
 
             {error && (
               <div style={{
-                padding: '10px 14px', borderRadius: '8px',
-                background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
-                color: '#fca5a5', fontSize: '0.85rem', marginBottom: '1rem',
+                padding: '10px 14px',
+                background: 'rgba(236,23,15,0.1)', border: '1px solid #EC170F',
+                color: '#EC170F', fontSize: '0.85rem', fontFamily: 'JetBrains Mono, monospace',
+                marginBottom: '1.25rem',
               }}>
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                  Full Name *
+                <label className="editorial-metadata" style={{ display: 'block', marginBottom: '6px', color: '#EC170F' }}>
+                  FULL NAME *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Alex Morgan"
+                  placeholder="ALEX MORGAN"
                   style={inputStyle}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -172,13 +180,13 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                  Email Address *
+                <label className="editorial-metadata" style={{ display: 'block', marginBottom: '6px', color: '#EC170F' }}>
+                  EMAIL ADDRESS *
                 </label>
                 <input
                   type="email"
                   required
-                  placeholder="alex@company.com"
+                  placeholder="ALEX@COMPANY.COM"
                   style={inputStyle}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -186,11 +194,11 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
               </div>
 
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                  <Briefcase size={12} /> Service Package
+                <label className="editorial-metadata" style={{ display: 'block', marginBottom: '6px' }}>
+                  SERVICE PACKAGE
                 </label>
                 <select
-                  style={inputStyle}
+                  style={{ ...inputStyle, background: 'var(--bg-elevated)' }}
                   value={service}
                   onChange={(e) => setService(e.target.value)}
                 >
@@ -201,8 +209,8 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
               </div>
 
               <div>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                  <DollarSign size={12} /> Estimated Budget
+                <label className="editorial-metadata" style={{ display: 'block', marginBottom: '6px' }}>
+                  ESTIMATED BUDGET
                 </label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                   {budgetRanges.map((b) => (
@@ -211,11 +219,15 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
                       type="button"
                       onClick={() => setBudget(b)}
                       style={{
-                        padding: '8px 12px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600,
+                        padding: '10px',
+                        fontSize: '0.78rem',
+                        fontFamily: 'JetBrains Mono, monospace',
+                        fontWeight: 700,
                         border: `1px solid ${budget === b ? '#EC170F' : 'var(--border-subtle)'}`,
-                        background: budget === b ? 'rgba(236,23,15,0.12)' : 'rgba(255,255,255,0.03)',
+                        background: budget === b ? 'rgba(236,23,15,0.12)' : 'transparent',
                         color: budget === b ? '#EC170F' : 'var(--text-muted)',
-                        cursor: 'pointer', transition: 'all 0.2s',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
                       }}
                     >
                       {b}
@@ -225,12 +237,12 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase' }}>
-                  Project Overview & Details
+                <label className="editorial-metadata" style={{ display: 'block', marginBottom: '6px' }}>
+                  PROJECT SPECIFICATIONS
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="Describe your vision, goals, key features, or reference websites..."
+                  placeholder="DESCRIBE YOUR VISION, REQUIRMENTS, OR REFERENCES..."
                   style={{ ...inputStyle, resize: 'vertical' }}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -240,19 +252,15 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
               <button
                 type="submit"
                 disabled={loading}
+                className="editorial-btn-primary"
                 style={{
+                  width: '100%',
+                  justifyContent: 'center',
                   marginTop: '0.5rem',
-                  padding: '14px 24px', borderRadius: '12px', border: 'none',
-                  background: 'linear-gradient(135deg, #EC170F, #0B3B9B)',
-                  color: 'white', fontSize: '0.95rem', fontWeight: 800,
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                  boxShadow: '0 8px 24px rgba(236,23,15,0.3)',
-                  transition: 'all 0.2s',
                 }}
               >
-                {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-                {loading ? 'Submitting...' : 'Submit Quote Request'}
+                {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                <span>{loading ? 'SUBMITTING...' : 'SUBMIT INQUIRY'}</span>
               </button>
             </form>
           </div>

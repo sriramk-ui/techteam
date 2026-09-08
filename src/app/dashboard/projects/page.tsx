@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import ProjectCard from '@/components/molecules/ProjectCard';
+import ProjectCard, { getProjectCoverSrc } from '@/components/molecules/ProjectCard';
 import VaultEditor from '@/components/organisms/VaultEditor';
 import {
-  Plus, X, FolderGit2, Save, Trash2, Edit2,
+  Plus, X, FolderGit2, Save, Trash2, Edit2, Upload, ImageIcon,
 } from 'lucide-react';
 
 interface Project {
@@ -19,21 +19,24 @@ interface Project {
   demoUrl?: string;
   projectUrl?: string;
   notes?: string;
+  coverImage?: string;
   assignedMembers?: { _id: string; name: string }[];
 }
 
 interface Member { _id: string; name: string }
 
-const emptyForm: {
-  title: string; description: string;
-  status: 'Planning' | 'Active' | 'Completed';
-  visibility: 'public' | 'private';
-  progress: number; githubUrl: string; demoUrl: string;
-  projectUrl: string; notes: string; assignedMembers: string[];
-} = {
-  title: '', description: '', status: 'Planning',
-  visibility: 'private', progress: 0,
-  githubUrl: '', demoUrl: '', projectUrl: '', notes: '', assignedMembers: [],
+const emptyForm = {
+  title: '',
+  description: '',
+  status: 'Planning' as 'Planning' | 'Active' | 'Completed',
+  visibility: 'private' as 'public' | 'private',
+  progress: 0,
+  githubUrl: '',
+  demoUrl: '',
+  projectUrl: '',
+  notes: '',
+  coverImage: '',
+  assignedMembers: [] as string[],
 };
 
 const inputStyle: React.CSSProperties = {
@@ -52,6 +55,7 @@ export default function ProjectsManagerPage() {
   const [editTarget, setEditTarget] = useState<Project | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState('');
   const [activeVaultProject, setActiveVaultProject] = useState<{ id: string; title: string } | null>(null);
 
@@ -85,11 +89,40 @@ export default function ProjectsManagerPage() {
       status: proj.status, visibility: proj.visibility,
       progress: proj.progress, githubUrl: proj.githubUrl || '',
       demoUrl: proj.demoUrl || '', projectUrl: proj.projectUrl || '',
-      notes: proj.notes || '',
+      notes: proj.notes || '', coverImage: proj.coverImage || proj.projectUrl || proj.demoUrl || '',
       assignedMembers: (proj.assignedMembers || []).map(m => m._id),
     });
     setError('');
     setShowModal(true);
+  }
+
+  async function handleUploadCoverImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message || 'Image upload failed');
+        return;
+      }
+
+      setForm((f) => ({ ...f, coverImage: data.url }));
+    } catch {
+      setError('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
   }
 
   async function handleSave() {
@@ -182,7 +215,7 @@ export default function ProjectsManagerPage() {
       {/* Modal */}
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}>
-          <div className="glass-strong" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', width: '100%', maxWidth: '540px', maxHeight: '90vh', overflowY: 'auto', border: '1px solid var(--border-default)' }}>
+          <div className="glass-strong" style={{ borderRadius: 'var(--radius-xl)', padding: '2rem', width: '100%', maxWidth: '560px', maxHeight: '90vh', overflowY: 'auto', border: '1px solid var(--border-default)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h2 style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-primary)' }}>
                 {editTarget ? 'Edit Project' : 'Create Project'}
@@ -224,6 +257,67 @@ export default function ProjectsManagerPage() {
                 <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '5px' }}>Progress ({form.progress}%)</label>
                 <input type="range" min={0} max={100} value={form.progress} onChange={e => setForm(f => ({ ...f, progress: +e.target.value }))} style={{ width: '100%', accentColor: 'var(--accent-primary)' }} />
               </div>
+
+              {/* Landing Page Preview / Cover Image Upload Option */}
+              <div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', fontWeight: 700, color: '#f59e0b', marginBottom: '5px' }}>
+                  <ImageIcon size={14} /> Landing Page Display Image (Cover Image)
+                </label>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <input
+                    style={inputStyle}
+                    value={form.coverImage}
+                    onChange={e => setForm(f => ({ ...f, coverImage: e.target.value }))}
+                    placeholder="https://... website URL or image URL"
+                  />
+                  <label
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      background: 'rgba(245, 158, 11, 0.15)',
+                      border: '1px solid rgba(245, 158, 11, 0.4)',
+                      color: '#f59e0b',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      cursor: uploadingImage ? 'not-allowed' : 'pointer',
+                      whiteSpace: 'nowrap',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Upload size={14} /> {uploadingImage ? 'Uploading...' : 'Upload File'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      disabled={uploadingImage}
+                      onChange={handleUploadCoverImage}
+                    />
+                  </label>
+                </div>
+                <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                  Tip: Upload screenshot image file OR paste your website URL (e.g. <code>https://dsc-panimalar-ads.in/</code>) to generate live screenshot automatically!
+                </span>
+                {form.coverImage && (
+                  <div style={{ marginTop: '8px', position: 'relative', width: '100%', height: '140px', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(245,158,11,0.3)', background: '#090d16' }}>
+                    <img src={getProjectCoverSrc(form.coverImage)} alt="Landing Page Cover Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, coverImage: '' }))}
+                      style={{
+                        position: 'absolute', top: '8px', right: '8px', width: '26px', height: '26px', borderRadius: '50%',
+                        background: 'rgba(0,0,0,0.7)', border: 'none', color: 'white', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '5px' }}>GitHub URL</label>

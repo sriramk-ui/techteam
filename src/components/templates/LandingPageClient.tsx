@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  ArrowRight, Zap, Trophy, Code2, Users, Star, GitBranch, ChevronRight, X, Send,
-  Filter, CheckCircle2, MessageSquare, Sparkles, Layers, Globe, Smartphone, Cpu, Boxes
+  ArrowUpRight, ArrowRight, Zap, Code2, Users, Trophy, ChevronRight,
+  Globe, Cpu, Layers, Smartphone, Sparkles, ChevronDown
 } from 'lucide-react';
-import ProjectCard from '@/components/molecules/ProjectCard';
+import LatestProjectsShowcase from '@/components/organisms/LatestProjectsShowcase';
+import LiquidTextHero from '@/components/organisms/LiquidTextHero';
+import TeamCarousel from '@/components/molecules/TeamCarousel';
 import MemberCard from '@/components/molecules/MemberCard';
 import EventCard from '@/components/molecules/EventCard';
 import QuoteModal from '@/components/molecules/QuoteModal';
@@ -34,16 +36,17 @@ export default function LandingPageClient({
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [windowDimensions, setWindowDimensions] = useState({ w: 1200, h: 800 });
 
-  // Client Quote Modal state
+  // Modal states
   const [isQuoteModalOpen, setQuoteModalOpen] = useState<boolean>(false);
   const [quoteService, setQuoteService] = useState<string>('Custom Web Apps & SaaS');
-
-  // Showcase Modal state
   const [showcaseProject, setShowcaseProject] = useState<any | null>(null);
 
-  // Interactive filter state
+  // Category filter state
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const categories = ['All', 'Full-Stack', 'AI / ML', 'Hackathon', 'Tools & Utils'];
+
+  // Interactive expanded expertise state
+  const [expandedCategory, setExpandedCategory] = useState<number>(0);
 
   const filteredProjects = featuredProjects.filter((p) => {
     if (selectedCategory === 'All') return true;
@@ -63,7 +66,7 @@ export default function LandingPageClient({
     const handleResize = () => {
       setWindowDimensions({ w: window.innerWidth, h: window.innerHeight });
     };
-    
+
     setWindowDimensions({ w: window.innerWidth, h: window.innerHeight });
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('resize', handleResize);
@@ -73,311 +76,325 @@ export default function LandingPageClient({
     };
   }, []);
 
-  const offsetX = (mousePos.x - windowDimensions.w / 2) * 0.04;
-  const offsetY = (mousePos.y - windowDimensions.h / 2) * 0.04;
+  const expertiseCategories = [
+    {
+      num: '01',
+      title: 'WEB ENGINEERING',
+      desc: 'High-performance Next.js 16 & React 19 web applications with SSR, edge caching, and atomic design systems.',
+      tech: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'GraphQL'],
+    },
+    {
+      num: '02',
+      title: 'AI & MACHINE LEARNING',
+      desc: 'Autonomous agent frameworks, LLM integrations, fine-tuned Python pipelines, and predictive analytics tools.',
+      tech: ['Python', 'PyTorch', 'OpenAI', 'LangChain', 'Vector DBs'],
+    },
+    {
+      num: '03',
+      title: 'DATA & CLOUD SYSTEMS',
+      desc: 'Scalable MongoDB document architectures, Mongoose ORM, microservices, and automated CI/CD pipelines.',
+      tech: ['MongoDB', 'Docker', 'AWS', 'Redis', 'Node.js'],
+    },
+    {
+      num: '04',
+      title: 'UI / UX & CREATIVE DIRECTION',
+      desc: 'Editorial visual systems, motion design, micro-interactions, dark mode palettes, and responsive grid layouts.',
+      tech: ['Figma', 'Framer Motion', 'Editorial Grid', 'Design Tokens'],
+    },
+    {
+      num: '05',
+      title: 'APP DEVELOPMENT',
+      desc: 'Cross-platform progressive web apps and mobile solutions built for speed, offline support, and security.',
+      tech: ['PWA', 'React Native', 'REST API', 'JWT Security'],
+    },
+    {
+      num: '06',
+      title: '3D WEBGL & INTERACTIVE',
+      desc: 'Custom Three.js shaders, 3D particle fields, interactive canvas visuals, and scroll-driven WebGL experiences.',
+      tech: ['Three.js', 'WebGL', 'GLSL Shaders', 'Canvas API'],
+    },
+  ];
 
-  const statList = [
-    { label: 'Projects Shipped', value: `${stats?.projectsCount || 0}+`, icon: Code2, color: '#EC170F' },
-    { label: 'Hackathons & Events', value: `${stats?.eventsCount || 0}+`, icon: Trophy, color: '#0B3B9B' },
-    { label: 'Team Members', value: (stats?.membersCount || 0).toString(), icon: Users, color: '#2563EB' },
-    { label: 'Awards Won', value: '5', icon: Star, color: '#EC170F' },
+  const timelineMilestones = [
+    { year: '2024', title: 'FOUNDATION & FIRST MILESTONE', desc: 'Tech Team established as an elite student-driven engineering studio. Shipped 5 core web platforms.' },
+    { year: '2025', title: 'NATIONAL EXPANSION & HACKATHONS', desc: 'Won 5+ national hackathons and expanded engineering capabilities into AI agents & 3D WebGL.' },
+    { year: '2026', title: 'NEXT-GEN DIGITAL PRODUCTS', desc: 'Scaling full-stack SaaS platforms, enterprise client projects, and high-impact digital experiences.' },
   ];
 
   return (
-    <div style={{ minHeight: '100vh', position: 'relative', background: 'var(--bg-base)', overflow: 'hidden' }}>
-      {/* 3D WebGL AeroShards Layer */}
+    <div style={{ minHeight: '100vh', position: 'relative', background: 'var(--bg-base)', color: 'var(--text-primary)' }}>
+      
+      {/* 3D WebGL AeroShards Background Layer */}
       <AeroShards
         backgroundColor="transparent"
         shardColor="#EC170F"
         accentColor="#0B3B9B"
         placement="full"
-        material="pearl"
-        detail="balanced"
-        effect="none"
-        flow="stream"
-        rippleIntensity={1}
-        holdToGather
-        scale={1}
-        spread={1}
-        depth={1}
-        speed={1}
-        spin={1}
+        density={windowDimensions.w < 768 ? 0.6 : 1.2}
+        shardSize={1.0}
+        speed={0.8}
+        spin={0.8}
         interaction="repel"
-        density={windowDimensions.w < 768 ? 0.7 : 1.5}
-        shardSize={1.1}
-        stretch={1}
-        turbulence={1}
-        glow={1}
-        edgeSoftness={2}
-        bloom={0.5}
-        grain={0.05}
-        chromaticAberration={0.0075}
-        transitionDuration={1}
-        interactionRadius={2.5}
+        interactionRadius={2.8}
         interactionStrength={0.6}
-        paused={false}
       />
 
-      {/* Interactive Mouse Spotlight Aura */}
+      {/* Grid Overlay */}
+      <div className="grid-bg" style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }} />
+
+      {/* Mouse Aura */}
       <div
         style={{
           position: 'fixed',
           inset: 0,
           pointerEvents: 'none',
           zIndex: 0,
-          background: `radial-gradient(650px circle at ${mousePos.x}px ${mousePos.y}px, rgba(236, 23, 15, 0.07), rgba(11, 59, 155, 0.06) 45%, transparent 80%)`,
-          transition: 'background 0.15s ease-out',
+          background: `radial-gradient(700px circle at ${mousePos.x}px ${mousePos.y}px, rgba(236, 23, 15, 0.05), transparent 70%)`,
         }}
       />
 
-      {/* Grid Overlay */}
-      <div className="grid-bg" style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }} />
-
-      {/* Orbs */}
-      <div className="orb" style={{
-        width: '650px', height: '650px', background: '#EC170F', top: '-120px', left: '-120px', zIndex: 0,
-        transform: `translate3d(${offsetX * 0.5}px, ${offsetY * 0.5}px, 0)`,
-        transition: 'transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1)'
-      }} />
-      <div className="orb" style={{
-        width: '550px', height: '550px', background: '#0B3B9B', bottom: '5%', right: '-100px', zIndex: 0,
-        transform: `translate3d(${-offsetX * 0.5}px, ${-offsetY * 0.5}px, 0)`,
-        transition: 'transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1)'
-      }} />
-
       {/* HERO SECTION */}
-      <section style={{ position: 'relative', zIndex: 1, padding: '6.5rem 1.5rem 4rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
-            padding: '6px 18px', borderRadius: '30px',
-            background: 'rgba(236, 23, 15, 0.08)', border: '1px solid rgba(236, 23, 15, 0.3)',
-            color: '#EC170F', fontSize: '0.85rem', fontWeight: 700, marginBottom: '2rem',
-            boxShadow: '0 4px 20px rgba(236, 23, 15, 0.15)',
-          }}>
-            <Zap size={14} fill="#EC170F" />
-            <span>Full-Stack Engineering & Web Studio</span>
+      <LiquidTextHero />
+
+      {/* Marquee Ticker Strip */}
+      <TechStackTicker />
+
+      {/* 01 — WORK / PROJECTS SECTION */}
+      <section
+        id="work"
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          padding: '7rem 2rem',
+          maxWidth: '1320px',
+          margin: '0 auto',
+        }}
+      >
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+            <span className="editorial-section-number">01 — WORK</span>
+            <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
           </div>
-
-          <h1 style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4.2rem)',
-            fontWeight: 900,
-            lineHeight: 1.1,
-            letterSpacing: '-0.03em',
-            color: 'var(--text-primary)',
-            marginBottom: '1.5rem',
-          }}>
-            We Build Fast, High-Converting <br />
-            <span className="gradient-text">Web Apps & Digital Experiences.</span>
-          </h1>
-
-          <p style={{
-            fontSize: 'clamp(1rem, 2vw, 1.25rem)',
-            color: 'var(--text-secondary)',
-            maxWidth: '680px',
-            margin: '0 auto 2.5rem',
-            lineHeight: 1.7,
-            fontWeight: 400,
-          }}>
-            From enterprise Next.js applications and SaaS platforms to 3D WebGL sites and client portfolios — we build production-ready digital products that scale.
-          </p>
-
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => { setQuoteService('Custom Web Apps & SaaS'); setQuoteModalOpen(true); }}
-              className="cta-primary"
-              style={{ border: 'none', cursor: 'pointer' }}
-            >
-              <Sparkles size={18} /> Request a Quote
-            </button>
-            <a href="#services" className="cta-secondary">
-              Explore Services <ArrowRight size={16} />
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* SERVICES & CAPABILITIES SECTION (#services) */}
-      <section id="services" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(236,23,15,0.08)', border: '1px solid rgba(236,23,15,0.25)', color: '#EC170F', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            <Sparkles size={14} /> Client Services & Engineering
-          </div>
-          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
-            What We <span className="gradient-text">Build For You</span>
+          <h2
+            className="editorial-display-heading"
+            style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+          >
+            SELECTED <span style={{ color: '#EC170F' }}>PROJECTS.</span>
           </h2>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '620px', margin: '0 auto', fontSize: '1rem', lineHeight: 1.6 }}>
-            We transform complex ideas into production-grade web platforms, high-converting portfolios, and custom interactive digital experiences.
-          </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
-          {[
-            {
-              icon: Globe,
-              title: 'Custom Web Apps & SaaS',
-              desc: 'Scalable Next.js & React platforms with authentication, real-time database, role permissions, and custom admin panels.',
-              color: '#EC170F',
-              service: 'Custom Web Apps & SaaS',
-            },
-            {
-              icon: Layers,
-              title: 'Interactive Portfolios',
-              desc: 'High-impact personal & agency portfolios featuring liquid micro-interactions, smooth scroll, and dark mode design systems.',
-              color: '#0B3B9B',
-              service: 'Interactive Portfolios & Showcases',
-            },
-            {
-              icon: Smartphone,
-              title: 'E-Commerce & High-Converting Stores',
-              desc: 'Mobile-first stores and high-converting landing pages built for speed, SEO ranking, and frictionless checkout flows.',
-              color: '#10b981',
-              service: 'E-Commerce & High-Converting Stores',
-            },
-            {
-              icon: Cpu,
-              title: '3D WebGL & Scroll-Animations',
-              desc: 'Custom Three.js 3D shaders, WebGL interactive models, particle systems, and immersive scroll-driven web animations.',
-              color: '#8b5cf6',
-              service: '3D WebGL & Scroll-Animation Websites',
-            },
-          ].map((srv, idx) => (
-            <div
-              key={idx}
-              className="glow-border glass-strong"
-              style={{
-                padding: '2rem', borderRadius: '20px', border: '1px solid var(--border-default)',
-                display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-                transition: 'all 0.3s ease',
-              }}
-            >
-              <div>
-                <div style={{
-                  width: '48px', height: '48px', borderRadius: '14px',
-                  background: `${srv.color}15`, border: `1px solid ${srv.color}40`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: srv.color, marginBottom: '1.25rem',
-                }}>
-                  <srv.icon size={24} />
-                </div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.6rem' }}>
-                  {srv.title}
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                  {srv.desc}
-                </p>
-              </div>
-              <button
-                onClick={() => { setQuoteService(srv.service); setQuoteModalOpen(true); }}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '6px',
-                  background: 'none', border: 'none', color: srv.color,
-                  fontSize: '0.85rem', fontWeight: 700, cursor: 'pointer', padding: 0,
-                }}
-              >
-                Request Quote <ArrowRight size={14} />
-              </button>
-            </div>
-          ))}
-        </div>
+        {/* Latest Projects Asymmetric Editorial Showcase Component */}
+        <LatestProjectsShowcase
+          projects={filteredProjects}
+          totalCount={stats?.projectsCount || 0}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          categories={categories}
+          onProjectClick={(p) => setShowcaseProject(p)}
+        />
       </section>
 
-      {/* FEATURED PROJECTS SHOWCASE (#projects) */}
-      <section id="projects" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="editorial-hr" />
+
+      {/* 02 — TEAM / PEOPLE SECTION */}
+      <section
+        id="team"
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          padding: '6rem 2rem',
+          maxWidth: '1320px',
+          margin: '0 auto',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            flexWrap: 'wrap',
+            gap: '2rem',
+            marginBottom: '4rem',
+          }}
+        >
           <div>
-            <span style={{ color: '#EC170F', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              Our Portfolio
-            </span>
-            <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
-              Things We&apos;ve <span className="gradient-text">Built</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+              <span className="editorial-section-number">02 — PEOPLE</span>
+              <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
+            </div>
+            <h2
+              className="editorial-display-heading"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+            >
+              MEET THE <span style={{ color: '#EC170F' }}>TEAM.</span>
             </h2>
           </div>
-          <Link href="/projects" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#EC170F', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none' }}>
-            View All Projects ({stats?.projectsCount || 0}) <ArrowRight size={16} />
+
+          <Link href="/team" className="editorial-btn-secondary">
+            <span>VIEW ALL ({stats?.membersCount || teamMembers.length})</span>
+            <ArrowRight size={14} />
           </Link>
         </div>
 
-        {/* Filter Pills */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              style={{
-                padding: '6px 16px', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600,
-                background: selectedCategory === cat ? 'rgba(236, 23, 15, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-                border: `1px solid ${selectedCategory === cat ? '#EC170F' : 'var(--border-subtle)'}`,
-                color: selectedCategory === cat ? '#EC170F' : 'var(--text-muted)',
-                cursor: 'pointer', transition: 'all 0.2s',
-              }}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {filteredProjects.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-            {filteredProjects.map((project) => (
-              <ProjectCard
-                key={project._id}
-                project={project}
-                onCardClick={(p) => setShowcaseProject(p)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-muted)' }}>
-            <Code2 size={40} style={{ opacity: 0.3, marginBottom: '1rem' }} />
-            <p>No projects in this filter category yet.</p>
-          </div>
-        )}
+        {/* Team Carousel */}
+        {teamMembers.length > 0 && <TeamCarousel members={teamMembers} />}
       </section>
 
-      {/* TEAM MEMBERS SECTION (#team) */}
-      {teamMembers.length > 0 && (
-        <section id="team" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
-              <span style={{ color: '#0B3B9B', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                Engineering Team
-              </span>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
-                Meet the <span className="gradient-text">Developers</span>
-              </h2>
-            </div>
-            <Link href="/team" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#0B3B9B', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none' }}>
-              View All Team Members <ArrowRight size={16} />
-            </Link>
-          </div>
+      <div className="editorial-hr" />
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem' }}>
-            {teamMembers.map((member) => (
-              <MemberCard key={member._id} member={member} />
-            ))}
+      {/* 03 — EXPERTISE / TECHNOLOGY SECTION */}
+      <section
+        id="expertise"
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          padding: '6rem 2rem',
+          maxWidth: '1320px',
+          margin: '0 auto',
+        }}
+      >
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+            <span className="editorial-section-number">03 — EXPERTISE</span>
+            <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
           </div>
-        </section>
-      )}
+          <h2
+            className="editorial-display-heading"
+            style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)', maxWidth: '1000px' }}
+          >
+            WE BUILD WITH <br />
+            <span style={{ color: '#EC170F' }}>TECHNOLOGY.</span>
+          </h2>
+        </div>
 
-      {/* RECENT EVENTS & HACKATHONS (#events) */}
+        {/* Accordion / List of Editorial Tech Categories */}
+        <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
+          {expertiseCategories.map((cat, idx) => {
+            const isExpanded = expandedCategory === idx;
+            return (
+              <div
+                key={cat.num}
+                onClick={() => setExpandedCategory(isExpanded ? -1 : idx)}
+                style={{
+                  borderBottom: '1px solid var(--border-subtle)',
+                  padding: '2rem 1rem',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                  background: isExpanded ? 'rgba(236, 23, 15, 0.04)' : 'transparent',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                    <span className="editorial-section-number" style={{ fontSize: '1.1rem' }}>
+                      {cat.num}
+                    </span>
+                    <h3
+                      className="editorial-display-heading"
+                      style={{
+                        fontSize: 'clamp(1.4rem, 3vw, 2.4rem)',
+                        color: isExpanded ? '#EC170F' : 'var(--text-primary)',
+                        transition: 'color 0.2s',
+                      }}
+                    >
+                      {cat.title}
+                    </h3>
+                  </div>
+
+                  <span className="editorial-metadata" style={{ color: isExpanded ? '#EC170F' : 'var(--text-muted)' }}>
+                    {isExpanded ? '[ COLLAPSE - ]' : '[ EXPAND + ]'}
+                  </span>
+                </div>
+
+                {/* Expanded Details */}
+                {isExpanded && (
+                  <div
+                    className="animate-fade-in-up"
+                    style={{
+                      marginTop: '1.5rem',
+                      paddingLeft: '3.5rem',
+                      maxWidth: '850px',
+                    }}
+                  >
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.7, marginBottom: '1.5rem' }}>
+                      {cat.desc}
+                    </p>
+
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {cat.tech.map((t) => (
+                        <span
+                          key={t}
+                          style={{
+                            fontFamily: 'JetBrains Mono, monospace',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            padding: '6px 14px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid var(--border-subtle)',
+                            color: 'var(--text-primary)',
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <div className="editorial-hr" />
+
+      {/* 04 — EVENTS & HACKATHONS SECTION */}
       {recentEvents.length > 0 && (
-        <section id="events" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <section
+          id="events"
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            padding: '6rem 2rem',
+            maxWidth: '1320px',
+            margin: '0 auto',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+              flexWrap: 'wrap',
+              gap: '2rem',
+              marginBottom: '4rem',
+            }}
+          >
             <div>
-              <span style={{ color: '#f59e0b', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                Track Record
-              </span>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 2.5rem)', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px' }}>
-                Events & <span className="gradient-text">Hackathons</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+                <span className="editorial-section-number">04 — EVENTS</span>
+                <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
+              </div>
+              <h2
+                className="editorial-display-heading"
+                style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+              >
+                WHERE WE <span style={{ color: '#EC170F' }}>COMPETE.</span>
               </h2>
             </div>
-            <Link href="/events" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#f59e0b', fontSize: '0.9rem', fontWeight: 700, textDecoration: 'none' }}>
-              All Achievements <ArrowRight size={16} />
+
+            <Link href="/events" className="editorial-btn-secondary">
+              <span>ALL ACHIEVEMENTS</span>
+              <ArrowRight size={14} />
             </Link>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+              gap: '2rem',
+            }}
+          >
             {recentEvents.map((event) => (
               <EventCard key={event._id} event={event} />
             ))}
@@ -385,196 +402,162 @@ export default function LandingPageClient({
         </section>
       )}
 
-      {/* SERVICE PACKAGES & PRICING TIERS (#pricing) */}
-      <section id="pricing" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '5px 14px', borderRadius: '20px', background: 'rgba(11,59,155,0.08)', border: '1px solid rgba(11,59,155,0.25)', color: '#2563EB', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            <Boxes size={14} /> Transparent Service Packages
+      <div className="editorial-hr" />
+
+      {/* 05 — ABOUT & STATISTICS SECTION */}
+      <section
+        id="about"
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          padding: '6rem 2rem',
+          maxWidth: '1320px',
+          margin: '0 auto',
+        }}
+      >
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+            <span className="editorial-section-number">05 — ABOUT</span>
+            <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
           </div>
-          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
-            Transparent <span className="gradient-text">Pricing & Packages</span>
+
+          <h2
+            className="editorial-display-heading"
+            style={{ fontSize: 'clamp(2.5rem, 6.5vw, 5.5rem)', maxWidth: '1100px', marginBottom: '2.5rem' }}
+          >
+            WE DON&apos;T JUST USE TECHNOLOGY. <br />
+            <span style={{ color: '#EC170F' }}>WE BUILD WITH IT.</span>
           </h2>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '580px', margin: '0 auto', fontSize: '1rem', lineHeight: 1.6 }}>
-            Choose a package tailored to your vision — from swift portfolio launches to enterprise SaaS engineering.
+
+          <p
+            style={{
+              color: 'var(--text-secondary)',
+              fontSize: '1.15rem',
+              lineHeight: 1.8,
+              maxWidth: '820px',
+            }}
+          >
+            Tech Team is an elite student engineering collective dedicated to designing and building production-grade digital products, full-stack applications, and competitive AI systems. We bridge the gap between creative visual design and complex software architecture.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          {[
-            {
-              name: 'Starter Portfolio',
-              price: '$500 – $1,500',
-              badge: 'Fast Delivery',
-              popular: false,
-              desc: 'Ideal for developers, creators, and freelancers who need a sleek digital presence.',
-              features: [
-                'Responsive Single-Page / Multi-Tab Site',
-                'Smooth Scroll & Framer Motion Animations',
-                'SEO Optimized & Lightning Fast Load',
-                'Contact & Lead Capture Form',
-                'GitHub / Vercel One-Click Deployment',
-              ],
-            },
-            {
-              name: 'Full-Stack Web App',
-              price: '$1,500 – $3,500',
-              badge: 'Most Popular',
-              popular: true,
-              desc: 'Complete production-ready web application built with Next.js, MongoDB & Auth.',
-              features: [
-                'Next.js 16 + React 19 + TypeScript',
-                'MongoDB Database & JWT Authentication',
-                'Admin Dashboard & Management Portal',
-                'Custom REST API & Role-Based Access',
-                'Secure File / Image Upload Integration',
-              ],
-            },
-            {
-              name: 'Enterprise & 3D Custom',
-              price: '$3,500+',
-              badge: 'High Scale',
-              popular: false,
-              desc: 'For brands needing custom 3D WebGL experiences, encryption vaults, and dedicated team SLA.',
-              features: [
-                'Interactive Three.js 3D WebGL Canvas',
-                'Encrypted Credentials Vault Integration',
-                'Custom Microservices & Database Arch',
-                'Priority 24/7 Support & Maintenance SLA',
-                'Custom Domain & Brand Design System',
-              ],
-            },
-          ].map((pkg, idx) => (
+        {/* Statistics Editorial Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '2rem',
+            borderTop: '1px solid var(--border-subtle)',
+            paddingTop: '3rem',
+          }}
+        >
+          <div>
             <div
-              key={idx}
-              className="glass-strong"
+              className="editorial-display-heading"
+              style={{ fontSize: '4.5rem', color: '#EC170F', marginBottom: '0.2rem' }}
+            >
+              {stats?.projectsCount || 0}+
+            </div>
+            <div className="editorial-metadata">PROJECTS SHIPPED</div>
+          </div>
+
+          <div>
+            <div
+              className="editorial-display-heading"
+              style={{ fontSize: '4.5rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}
+            >
+              {stats?.membersCount || 0}
+            </div>
+            <div className="editorial-metadata">CORE ENGINEERS</div>
+          </div>
+
+          <div>
+            <div
+              className="editorial-display-heading"
+              style={{ fontSize: '4.5rem', color: '#0B3B9B', marginBottom: '0.2rem' }}
+            >
+              {stats?.eventsCount || 0}+
+            </div>
+            <div className="editorial-metadata">EVENTS & HACKATHONS</div>
+          </div>
+
+          <div>
+            <div
+              className="editorial-display-heading"
+              style={{ fontSize: '4.5rem', color: '#EC170F', marginBottom: '0.2rem' }}
+            >
+              05+
+            </div>
+            <div className="editorial-metadata">NATIONAL AWARDS</div>
+          </div>
+        </div>
+      </section>
+
+      <div className="editorial-hr" />
+
+      {/* 06 — ACHIEVEMENTS TIMELINE SECTION */}
+      <section
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          padding: '6rem 2rem',
+          maxWidth: '1320px',
+          margin: '0 auto',
+        }}
+      >
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+            <span className="editorial-section-number">06 — TIMELINE</span>
+            <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
+          </div>
+          <h2
+            className="editorial-display-heading"
+            style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}
+          >
+            OUR <span style={{ color: '#EC170F' }}>MILESTONES.</span>
+          </h2>
+        </div>
+
+        <div style={{ borderTop: '1px solid var(--border-subtle)' }}>
+          {timelineMilestones.map((m) => (
+            <div
+              key={m.year}
               style={{
-                padding: '2.5rem 2rem', borderRadius: '24px',
-                border: pkg.popular ? '2px solid #EC170F' : '1px solid var(--border-default)',
-                boxShadow: pkg.popular ? '0 15px 40px rgba(236,23,15,0.2)' : 'none',
-                position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+                display: 'grid',
+                gridTemplateColumns: '140px 1fr',
+                gap: '2rem',
+                padding: '2.5rem 0',
+                borderBottom: '1px solid var(--border-subtle)',
+                alignItems: 'flex-start',
               }}
             >
-              {pkg.badge && (
-                <span style={{
-                  position: 'absolute', top: '1.25rem', right: '1.25rem',
-                  padding: '4px 12px', borderRadius: '20px', fontSize: '0.72rem', fontWeight: 800,
-                  background: pkg.popular ? 'linear-gradient(135deg, #EC170F, #0B3B9B)' : 'rgba(255,255,255,0.06)',
-                  border: pkg.popular ? 'none' : '1px solid var(--border-subtle)',
-                  color: 'white', textTransform: 'uppercase', letterSpacing: '0.05em',
-                }}>
-                  {pkg.badge}
-                </span>
-              )}
-              <div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-                  {pkg.name}
-                </h3>
-                <div style={{ fontSize: '1.8rem', fontWeight: 900, color: pkg.popular ? '#EC170F' : 'var(--text-primary)', marginBottom: '1rem' }}>
-                  {pkg.price}
-                </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', lineHeight: 1.5, marginBottom: '1.75rem' }}>
-                  {pkg.desc}
-                </p>
-                <div style={{ height: '1px', background: 'var(--border-subtle)', marginBottom: '1.75rem' }} />
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {pkg.features.map((feat, fIdx) => (
-                    <li key={fIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                      <CheckCircle2 size={16} color={pkg.popular ? '#EC170F' : '#10b981'} style={{ flexShrink: 0 }} />
-                      {feat}
-                    </li>
-                  ))}
-                </ul>
+              <div className="editorial-display-heading" style={{ fontSize: '2.8rem', color: '#EC170F' }}>
+                {m.year}
               </div>
-              <button
-                onClick={() => { setQuoteService(pkg.name); setQuoteModalOpen(true); }}
-                style={{
-                  width: '100%', padding: '14px', borderRadius: '12px',
-                  border: pkg.popular ? 'none' : '1px solid var(--border-default)',
-                  background: pkg.popular ? 'linear-gradient(135deg, #EC170F, #0B3B9B)' : 'rgba(255,255,255,0.06)',
-                  color: 'white', fontWeight: 800, cursor: 'pointer',
-                  boxShadow: pkg.popular ? '0 8px 25px rgba(236,23,15,0.3)' : 'none',
-                  transition: 'all 0.2s',
-                }}
-              >
-                Request Quote
-              </button>
+              <div>
+                <h3 className="editorial-display-heading" style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>
+                  {m.title}
+                </h3>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, margin: 0 }}>
+                  {m.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CLIENT INQUIRY CTA & CONTACT SECTION (#contact) */}
-      <section id="contact" style={{ position: 'relative', zIndex: 1, padding: '5rem 1.5rem 7rem', maxWidth: '1100px', margin: '0 auto' }}>
-        <div className="glass-strong" style={{
-          borderRadius: '32px', padding: '3.5rem 2rem', textAlign: 'center',
-          border: '1px solid rgba(236,23,15,0.3)',
-          background: 'linear-gradient(135deg, rgba(236,23,15,0.06) 0%, rgba(11,59,155,0.06) 100%)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-        }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '20px', background: 'rgba(236,23,15,0.12)', color: '#EC170F', fontSize: '0.8rem', fontWeight: 800, marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            <Zap size={14} /> Ready To Build?
-          </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem', letterSpacing: '-0.03em' }}>
-            Have a Project in Mind? <span className="gradient-text">Let&apos;s Build It.</span>
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto 2.5rem', fontSize: '1.05rem', lineHeight: 1.7 }}>
-            From concept design to full-stack deployment — get a custom quote and timeline for your web app, portfolio, or e-commerce store.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => { setQuoteService('Custom Web Apps & SaaS'); setQuoteModalOpen(true); }}
-              className="cta-primary"
-              style={{ border: 'none', cursor: 'pointer', fontSize: '1rem', padding: '14px 32px' }}
-            >
-              <Sparkles size={18} /> Request a Project Quote
-            </button>
-            <Link href="/team" className="cta-secondary">
-              <Users size={18} /> Meet the Engineering Team
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Quote Request Modal */}
+      {/* Modals */}
       <QuoteModal
         isOpen={isQuoteModalOpen}
         onClose={() => setQuoteModalOpen(false)}
         initialService={quoteService}
       />
 
-      {/* Project Showcase Modal */}
       <ProjectShowcaseModal
         project={showcaseProject}
         onClose={() => setShowcaseProject(null)}
       />
-
-      <style>{`
-        .cta-primary {
-          display: inline-flex; align-items: center; gap: 8px;
-          padding: 12px 28px; border-radius: 12px;
-          background: linear-gradient(135deg, #EC170F, #0B3B9B);
-          color: white; font-weight: 700; text-decoration: none;
-          font-size: 0.95rem; box-shadow: 0 10px 30px rgba(236, 23, 15, 0.28);
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .cta-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 15px 40px rgba(236, 23, 15, 0.45);
-        }
-        .cta-secondary {
-          display: inline-flex; align-items: center; gap: 8px;
-          padding: 12px 28px; border-radius: 12px;
-          background: var(--bg-card); color: var(--text-primary);
-          font-weight: 700; text-decoration: none; font-size: 0.95rem;
-          border: 1px solid var(--border-default);
-          box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-          transition: all 0.2s;
-        }
-        .cta-secondary:hover {
-          border-color: #EC170F;
-          color: #EC170F;
-        }
-      `}</style>
     </div>
   );
 }

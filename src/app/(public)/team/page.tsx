@@ -6,8 +6,8 @@ import { User } from '@/models/User';
 import connectToDatabase from '@/lib/db';
 
 export const metadata: Metadata = {
-  title: 'Meet the Team | Innovation Collaboration',
-  description: 'Get to know the talented individuals behind Innovation Collaboration — developers, designers, and problem-solvers.',
+  title: 'Team | Tech Team Studio',
+  description: 'Meet the engineers, designers, and problem solvers of Tech Team Studio.',
 };
 
 export const dynamic = 'force-dynamic';
@@ -28,59 +28,53 @@ export default async function TeamPage() {
   const members = await getTeamMembers();
 
   return (
-    <div style={{ minHeight: '80vh', position: 'relative', paddingBottom: '6rem' }}>
-      <div className="orb" style={{ width: '450px', height: '450px', background: '#EC170F', top: 0, right: '10%', zIndex: 0 }} />
-
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 1.5rem 2rem', position: 'relative', zIndex: 1 }}>
+    <div style={{ minHeight: '85vh', position: 'relative', background: 'var(--bg-base)', paddingBottom: '6rem' }}>
+      <div style={{ maxWidth: '1320px', margin: '0 auto', padding: '5rem 2rem 2rem', position: 'relative', zIndex: 1 }}>
+        
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
-            padding: '6px 16px', borderRadius: '20px',
-            background: 'rgba(236, 23, 15, 0.08)', border: '1px solid rgba(236, 23, 15, 0.3)',
-            color: '#EC170F', fontSize: '0.8rem', fontWeight: 700, marginBottom: '1.25rem',
-            letterSpacing: '0.05em',
-          }}>
-            <Users size={14} /> {members.length} TEAM MEMBERS
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
+            <span className="editorial-section-number">02 — PEOPLE</span>
+            <span style={{ height: '1px', width: '50px', background: '#EC170F' }} />
+            <span className="editorial-metadata">[{members.length} MEMBERS]</span>
           </div>
-          <h1 style={{ fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', fontWeight: 900, color: 'var(--text-primary)', marginBottom: '1rem' }}>
-            The <span className="gradient-text">People</span> Behind Innovation Collaboration
+
+          <h1
+            className="editorial-display-heading"
+            style={{ fontSize: 'clamp(2.8rem, 7vw, 6rem)', marginBottom: '1.5rem' }}
+          >
+            MEET THE <span style={{ color: '#EC170F' }}>TEAM.</span>
           </h1>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '540px', margin: '0 auto', lineHeight: 1.7, fontWeight: 500 }}>
-            Click on any member card to view their custom developer portfolio profile, skills, and shipped projects.
+
+          <p style={{ color: 'var(--text-secondary)', maxWidth: '650px', fontSize: '1.1rem', lineHeight: 1.7 }}>
+            The developers, designers, and engineers behind Tech Team. Click any member to explore their developer profile and shipped projects.
           </p>
         </div>
 
-        {/* Grid */}
+        <div className="editorial-hr" style={{ margin: '2rem 0 3.5rem' }} />
+
+        {/* Editorial Member Grid */}
         {members.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
-            {members.map((member: any) => (
-              <MemberCard key={member._id} member={member} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+            {members.map((member: any, idx: number) => (
+              <MemberCard key={member._id} member={member} index={idx} />
             ))}
           </div>
         ) : (
-          <div style={{ textAlign: 'center', padding: '5rem 0', color: 'var(--text-muted)' }}>
+          <div style={{ textAlign: 'center', padding: '6rem 0', color: 'var(--text-muted)' }}>
             <Users size={40} style={{ marginBottom: '1rem', opacity: 0.3 }} />
-            <p>No team members yet. Check back soon!</p>
+            <p style={{ fontFamily: 'JetBrains Mono, monospace' }}>NO TEAM MEMBERS FOUND</p>
           </div>
         )}
 
-        {/* Bottom link */}
-        <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-          <Link href="/projects" className="team-projects-link">
-            See what we built <ArrowRight size={16} />
+        {/* Bottom CTA */}
+        <div style={{ textAlign: 'center', marginTop: '5rem' }}>
+          <Link href="/projects" className="editorial-btn-primary">
+            <span>SEE WHAT WE BUILT</span>
+            <ArrowRight size={16} />
           </Link>
         </div>
       </div>
-
-      <style>{`
-        .team-projects-link {
-          display: inline-flex; align-items: center; gap: 8px;
-          color: #EC170F; text-decoration: none; font-weight: 700;
-          transition: gap 0.2s;
-        }
-        .team-projects-link:hover { gap: 12px; }
-      `}</style>
     </div>
   );
 }
