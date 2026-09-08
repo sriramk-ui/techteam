@@ -18,102 +18,105 @@ export default function HelloPreloader() {
   const [stage, setStage] = useState<'counter' | 'greeting' | 'exiting' | 'complete'>('counter');
   const [greetingIndex, setGreetingIndex] = useState(0);
 
-  // SVG Curve dimensions
-  const [dimension, setDimension] = useState({ width: 0, height: 0 });
+  // Screen dimensions for SVG curve wipe
+  const [dimension, setDimension] = useState({ width: 1200, height: 800 });
 
   useEffect(() => {
-    // Check if preloader has already run in this session
-    const hasSeen = sessionStorage.getItem('hasSeenHelloPreloader');
-    if (hasSeen === 'true') {
-      setIsLoading(false);
-      setStage('complete');
-      return;
+    // 1. Session check with safe try-catch
+    try {
+      const hasSeen = sessionStorage.getItem('hasSeenHelloPreloader');
+      if (hasSeen === 'true') {
+        setIsLoading(false);
+        setStage('complete');
+        return;
+      }
+    } catch (e) {
+      // Ignore storage errors in restricted browser environments
     }
 
-    // Set screen dimensions for SVG curve wipe
-    setDimension({
-      width: window.innerWidth || 1200,
-      height: window.innerHeight || 800,
-    });
-
-    const handleResize = () => {
+    // Set initial window size
+    if (typeof window !== 'undefined') {
       setDimension({
         width: window.innerWidth || 1200,
         height: window.innerHeight || 800,
       });
-    };
 
-    window.addEventListener('resize', handleResize);
+      const handleResize = () => {
+        setDimension({
+          width: window.innerWidth || 1200,
+          height: window.innerHeight || 800,
+        });
+      };
+      window.addEventListener('resize', handleResize);
 
-    // Global safety timer: Ensure preloader NEVER locks the screen for more than 3.5 seconds
-    const safetyTimer = setTimeout(() => {
-      setIsLoading(false);
-      setStage('complete');
-      sessionStorage.setItem('hasSeenHelloPreloader', 'true');
-    }, 3500);
+      // Hard safety timer: Guaranteed unmount after 2.6 seconds total
+      const hardSafetyTimer = setTimeout(() => {
+        setIsLoading(false);
+        setStage('complete');
+        try {
+          sessionStorage.setItem('hasSeenHelloPreloader', 'true');
+        } catch (e) {}
+      }, 2600);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      clearTimeout(safetyTimer);
-    };
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        clearTimeout(hardSafetyTimer);
+      };
+    }
   }, []);
 
-  // Counter progress animation (0% -> 100%)
+  // Stage 1: Fast counter progress (0% -> 100%)
   useEffect(() => {
     if (stage !== 'counter') return;
 
-    const duration = 1000; // ms
-    const interval = 20; // ms
-    const step = 100 / (duration / interval);
-
     const timer = setInterval(() => {
       setProgress((prev) => {
-        const next = prev + step + Math.random() * 3;
-        if (next >= 100) {
+        if (prev >= 100) {
           clearInterval(timer);
-          setTimeout(() => setStage('greeting'), 150);
+          setTimeout(() => setStage('greeting'), 100);
           return 100;
         }
-        return next;
+        return prev + 12;
       });
-    }, interval);
+    }, 30);
 
     return () => clearInterval(timer);
   }, [stage]);
 
-  // Greeting cycling sequence
+  // Stage 2: Greeting text cycling
   useEffect(() => {
     if (stage !== 'greeting') return;
 
-    const interval = setInterval(() => {
-      setGreetingIndex((prev) => {
-        if (prev < GREETINGS.length - 1) {
-          return prev + 1;
-        } else {
-          clearInterval(interval);
-          setTimeout(() => {
-            setStage('exiting');
-            sessionStorage.setItem('hasSeenHelloPreloader', 'true');
-          }, 200);
-          return prev;
-        }
-      });
-    }, 180);
+    let index = 0;
+    const greetingTimer = setInterval(() => {
+      index++;
+      if (index < GREETINGS.length) {
+        setGreetingIndex(index);
+      } else {
+        clearInterval(greetingTimer);
+        // Step to exiting stage
+        setStage('exiting');
+        try {
+          sessionStorage.setItem('hasSeenHelloPreloader', 'true');
+        } catch (e) {}
+      }
+    }, 150);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(greetingTimer);
   }, [stage]);
 
-  // Transition from 'exiting' -> 'complete'
+  // Stage 3: Slide exit transition to complete
   useEffect(() => {
     if (stage === 'exiting') {
       const exitTimer = setTimeout(() => {
         setIsLoading(false);
         setStage('complete');
-      }, 700); // Allow exit slide-up transition to finish
+      }, 550);
       return () => clearTimeout(exitTimer);
     }
   }, [stage]);
 
+  // Unmount completely if not loading or stage is complete
   if (!isLoading || stage === 'complete') return null;
 
   // SVG curve morph paths
@@ -123,11 +126,11 @@ export default function HelloPreloader() {
   const curveAnimation = {
     initial: {
       d: initialPath,
-      transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const }
+      transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] as const }
     },
     exit: {
       d: targetPath,
-      transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const, delay: 0.1 }
+      transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] as const, delay: 0.05 }
     }
   };
 
@@ -136,11 +139,12 @@ export default function HelloPreloader() {
       <motion.div
         key="preloader"
         className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#0a0a0c] text-[#f1e7dd] selection:bg-transparent overflow-hidden"
+        style={{ pointerEvents: stage === 'exiting' ? 'none' : 'auto' }}
         initial={{ opacity: 1, y: 0 }}
         animate={stage === 'exiting' ? { y: '-100%' } : { opacity: 1, y: 0 }}
-        transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
+        transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
       >
-        {/* Main Preloader Content Container */}
+        {/* Main Preloader Content */}
         <div className="relative z-10 flex flex-col items-center justify-center space-y-6">
           <AnimatePresence mode="wait">
             {stage === 'counter' && (
@@ -149,7 +153,7 @@ export default function HelloPreloader() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.2 }}
                 className="flex flex-col items-center justify-center space-y-5"
               >
                 {/* Percentage Counter */}
@@ -191,7 +195,7 @@ export default function HelloPreloader() {
                 initial={{ opacity: 0, scale: 0.9, y: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30, scale: 1.05 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.18 }}
                 className="flex items-center justify-center min-h-[120px]"
               >
                 <motion.h1
@@ -199,7 +203,7 @@ export default function HelloPreloader() {
                   initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
-                  transition={{ duration: 0.15 }}
+                  transition={{ duration: 0.12 }}
                   className="font-script text-7xl sm:text-8xl md:text-9xl text-[#f1e7dd] font-bold tracking-wide drop-shadow-[0_10px_25px_rgba(241,231,221,0.2)]"
                 >
                   {GREETINGS[greetingIndex]}
@@ -215,7 +219,7 @@ export default function HelloPreloader() {
             <motion.path
               variants={curveAnimation}
               initial="initial"
-              animate={stage === 'exiting' ? "exit" : "initial"}
+              animate={stage === 'exiting' ? 'exit' : 'initial'}
             />
           </svg>
         )}
@@ -223,4 +227,3 @@ export default function HelloPreloader() {
     </AnimatePresence>
   );
 }
-
