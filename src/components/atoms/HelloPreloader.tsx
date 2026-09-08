@@ -32,35 +32,46 @@ export default function HelloPreloader() {
 
     // Set screen dimensions for SVG curve wipe
     setDimension({
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: window.innerWidth || 1200,
+      height: window.innerHeight || 800,
     });
 
     const handleResize = () => {
       setDimension({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: window.innerWidth || 1200,
+        height: window.innerHeight || 800,
       });
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    // Global safety timer: Ensure preloader NEVER locks the screen for more than 3.5 seconds
+    const safetyTimer = setTimeout(() => {
+      setIsLoading(false);
+      setStage('complete');
+      sessionStorage.setItem('hasSeenHelloPreloader', 'true');
+    }, 3500);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(safetyTimer);
+    };
   }, []);
 
   // Counter progress animation (0% -> 100%)
   useEffect(() => {
     if (stage !== 'counter') return;
 
-    const duration = 1400; // ms
+    const duration = 1000; // ms
     const interval = 20; // ms
     const step = 100 / (duration / interval);
 
     const timer = setInterval(() => {
       setProgress((prev) => {
-        const next = prev + step + Math.random() * 2;
+        const next = prev + step + Math.random() * 3;
         if (next >= 100) {
           clearInterval(timer);
-          setTimeout(() => setStage('greeting'), 200);
+          setTimeout(() => setStage('greeting'), 150);
           return 100;
         }
         return next;
@@ -82,22 +93,26 @@ export default function HelloPreloader() {
           clearInterval(interval);
           setTimeout(() => {
             setStage('exiting');
-            // Mark preloader as seen
             sessionStorage.setItem('hasSeenHelloPreloader', 'true');
-          }, 300);
+          }, 200);
           return prev;
         }
       });
-    }, 220);
+    }, 180);
 
     return () => clearInterval(interval);
   }, [stage]);
 
-  // Completion callback
-  const handleExitComplete = () => {
-    setIsLoading(false);
-    setStage('complete');
-  };
+  // Transition from 'exiting' -> 'complete'
+  useEffect(() => {
+    if (stage === 'exiting') {
+      const exitTimer = setTimeout(() => {
+        setIsLoading(false);
+        setStage('complete');
+      }, 700); // Allow exit slide-up transition to finish
+      return () => clearTimeout(exitTimer);
+    }
+  }, [stage]);
 
   if (!isLoading || stage === 'complete') return null;
 
@@ -108,24 +123,22 @@ export default function HelloPreloader() {
   const curveAnimation = {
     initial: {
       d: initialPath,
-      transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] as const }
+      transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const }
     },
     exit: {
       d: targetPath,
-      transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] as const, delay: 0.1 }
+      transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] as const, delay: 0.1 }
     }
   };
 
   return (
-    <AnimatePresence onExitComplete={handleExitComplete}>
+    <AnimatePresence>
       <motion.div
         key="preloader"
         className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#0a0a0c] text-[#f1e7dd] selection:bg-transparent overflow-hidden"
-        initial={{ opacity: 1 }}
-        exit={{
-          y: '-100%',
-          transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] as const }
-        }}
+        initial={{ opacity: 1, y: 0 }}
+        animate={stage === 'exiting' ? { y: '-100%' } : { opacity: 1, y: 0 }}
+        transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
       >
         {/* Main Preloader Content Container */}
         <div className="relative z-10 flex flex-col items-center justify-center space-y-6">
@@ -136,7 +149,7 @@ export default function HelloPreloader() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.25 }}
                 className="flex flex-col items-center justify-center space-y-5"
               >
                 {/* Percentage Counter */}
@@ -147,7 +160,6 @@ export default function HelloPreloader() {
                 {/* Circular Arc Loader */}
                 <div className="relative w-16 h-16 flex items-center justify-center">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 50 50">
-                    {/* Background Track */}
                     <circle
                       cx="25"
                       cy="25"
@@ -156,7 +168,6 @@ export default function HelloPreloader() {
                       strokeWidth="3.5"
                       fill="none"
                     />
-                    {/* Animated Arc */}
                     <circle
                       cx="25"
                       cy="25"
@@ -180,7 +191,7 @@ export default function HelloPreloader() {
                 initial={{ opacity: 0, scale: 0.9, y: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30, scale: 1.05 }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.2 }}
                 className="flex items-center justify-center min-h-[120px]"
               >
                 <motion.h1
@@ -188,7 +199,7 @@ export default function HelloPreloader() {
                   initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
-                  transition={{ duration: 0.18 }}
+                  transition={{ duration: 0.15 }}
                   className="font-script text-7xl sm:text-8xl md:text-9xl text-[#f1e7dd] font-bold tracking-wide drop-shadow-[0_10px_25px_rgba(241,231,221,0.2)]"
                 >
                   {GREETINGS[greetingIndex]}
@@ -204,7 +215,7 @@ export default function HelloPreloader() {
             <motion.path
               variants={curveAnimation}
               initial="initial"
-              exit="exit"
+              animate={stage === 'exiting' ? "exit" : "initial"}
             />
           </svg>
         )}
@@ -212,3 +223,4 @@ export default function HelloPreloader() {
     </AnimatePresence>
   );
 }
+
