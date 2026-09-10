@@ -22,14 +22,6 @@ export default function HelloPreloader() {
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    // Check if preloader has already run in this session
-    const hasSeen = sessionStorage.getItem('hasSeenHelloPreloader');
-    if (hasSeen === 'true') {
-      setIsLoading(false);
-      setStage('complete');
-      return;
-    }
-
     // Set screen dimensions for SVG curve wipe
     setDimension({
       width: window.innerWidth || 1200,
@@ -49,7 +41,6 @@ export default function HelloPreloader() {
     const safetyTimer = setTimeout(() => {
       setIsLoading(false);
       setStage('complete');
-      sessionStorage.setItem('hasSeenHelloPreloader', 'true');
     }, 3500);
 
     return () => {
@@ -93,7 +84,6 @@ export default function HelloPreloader() {
           clearInterval(interval);
           setTimeout(() => {
             setStage('exiting');
-            sessionStorage.setItem('hasSeenHelloPreloader', 'true');
           }, 200);
           return prev;
         }
