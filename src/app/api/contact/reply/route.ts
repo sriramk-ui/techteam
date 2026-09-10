@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     if (!emailResult.success) {
       return NextResponse.json({
-        message: emailResult.reason || 'Failed to dispatch email via Brevo. Check BREVO_API_KEY in environment.',
+        message: emailResult.error || emailResult.reason || 'Failed to dispatch email via Brevo. Check BREVO_API_KEY in environment.',
         emailResult,
         inquiry: updatedInquiry,
       }, { status: 500 });
