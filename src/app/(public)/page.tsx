@@ -14,7 +14,10 @@ async function getPortfolioData() {
     // Fetch stats
     const projectsCount = await Project.countDocuments({ visibility: 'public' });
     const eventsCount = await Event.countDocuments({});
-    const membersCount = await User.countDocuments({});
+    const membersCount = await User.countDocuments({
+      name: { $nin: ['Tech Team', 'tech team'] },
+      email: { $nin: ['techteam@gmail.com', 'techteam@team.dev'] }
+    });
     
     // Fetch top public projects (up to 6 for showcase)
     const rawProjects = await Project.find({ visibility: 'public' })
@@ -24,7 +27,10 @@ async function getPortfolioData() {
       .lean();
       
     // Fetch team members (up to 8 for showcase)
-    const rawMembers = await User.find({})
+    const rawMembers = await User.find({
+      name: { $nin: ['Tech Team', 'tech team'] },
+      email: { $nin: ['techteam@gmail.com', 'techteam@team.dev'] }
+    })
       .select('name role profilePic socialLinks')
       .limit(8)
       .lean();

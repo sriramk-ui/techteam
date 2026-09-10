@@ -6,7 +6,10 @@ import { User } from '@/models/User';
 export async function GET() {
   try {
     await connectToDatabase();
-    const users = await User.find({}).select('name role profilePic socialLinks -password');
+    const users = await User.find({
+      name: { $nin: ['Tech Team', 'tech team'] },
+      email: { $nin: ['techteam@gmail.com', 'techteam@team.dev'] }
+    }).select('name role profilePic socialLinks -password');
     return NextResponse.json({ users }, { status: 200 });
   } catch (error) {
     console.error('Public users fetch error', error);

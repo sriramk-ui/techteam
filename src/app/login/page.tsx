@@ -89,10 +89,10 @@ function LoginForm() {
               </div>
             </Link>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
-              Welcome back
+              Team Login
             </h1>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-              Sign in to access the team dashboard
+              Enter Team credentials to access TeamOS dashboard
             </p>
           </div>
 
@@ -112,14 +112,14 @@ function LoginForm() {
             {/* Email */}
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', letterSpacing: '0.03em' }}>
-                Email Address
+                Team Email / User ID
               </label>
               <input
                 id="login-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@team.dev"
+                placeholder="techteam@gmail.com"
                 required
                 style={inputStyle}
                 onFocus={(e) => { e.target.style.borderColor = 'rgba(139,92,246,0.6)'; e.target.style.boxShadow = '0 0 0 3px rgba(139,92,246,0.1)'; }}
@@ -130,7 +130,7 @@ function LoginForm() {
             {/* Password */}
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '6px', letterSpacing: '0.03em' }}>
-                Password
+                Team Password
               </label>
               <div style={{ position: 'relative' }}>
                 <input
@@ -138,7 +138,7 @@ function LoginForm() {
                   type={showPass ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="Enter team password"
                   required
                   style={{ ...inputStyle, paddingRight: '44px' }}
                   onFocus={(e) => { e.target.style.borderColor = 'rgba(139,92,246,0.6)'; e.target.style.boxShadow = '0 0 0 3px rgba(139,92,246,0.1)'; }}
@@ -178,17 +178,17 @@ function LoginForm() {
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.transform = ''; }}
             >
               {loading ? (
-                <span>Signing in...</span>
+                <span>Authenticating...</span>
               ) : (
-                <><LogIn size={16} /> Sign In</>
+                <><LogIn size={16} /> Team Sign In</>
               )}
             </button>
           </form>
 
           <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            Not a team member?{' '}
+            Official Team Access Only ·{' '}
             <Link href="/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>
-              View public portfolio →
+              Return to Studio Portfolio →
             </Link>
           </p>
         </div>

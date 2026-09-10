@@ -68,16 +68,35 @@ export default function AeroShards({
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
     camera.position.z = 12;
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    if (backgroundColor !== 'transparent') {
-      renderer.setClearColor(new THREE.Color(backgroundColor), 1);
-    } else {
-      renderer.setClearColor(0x000000, 0);
+    // Check WebGL availability safely
+    try {
+      const testCanvas = document.createElement('canvas');
+      const gl = testCanvas.getContext('webgl2') || testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
+      if (!gl) {
+        console.warn('WebGL is disabled or unsupported in this browser environment. AeroShards background disabled.');
+        return;
+      }
+    } catch {
+      console.warn('WebGL support check failed. AeroShards background disabled.');
+      return;
     }
-    container.appendChild(renderer.domElement);
+
+    let renderer: THREE.WebGLRenderer | null = null;
+    try {
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      if (backgroundColor !== 'transparent') {
+        renderer.setClearColor(new THREE.Color(backgroundColor), 1);
+      } else {
+        renderer.setClearColor(0x000000, 0);
+      }
+      container.appendChild(renderer.domElement);
+    } catch (err) {
+      console.warn('Three.js WebGLRenderer initialization error:', err);
+      return;
+    }
 
     // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
@@ -196,7 +215,7 @@ export default function AeroShards({
 
     // Resize Handler
     const handleResize = () => {
-      if (!container) return;
+      if (!container || !renderer) return;
       const w = container.clientWidth || window.innerWidth;
       const h = container.clientHeight || window.innerHeight;
       camera.aspect = w / h;
@@ -213,7 +232,7 @@ export default function AeroShards({
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      if (paused) return;
+      if (paused || !renderer) return;
 
       const elapsedTime = clock.getElapsedTime() * speed;
 
@@ -271,10 +290,12 @@ export default function AeroShards({
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (renderer) {
+        if (container && renderer.domElement && container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
+        renderer.dispose();
       }
-      renderer.dispose();
       geometries.forEach(g => g.dispose());
     };
   }, [backgroundColor, shardColor, accentColor, speed, spin, interaction, density, shardSize, interactionRadius, interactionStrength, paused]);

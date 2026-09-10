@@ -41,23 +41,8 @@ export default function LandingPageClient({
   const [quoteService, setQuoteService] = useState<string>('Custom Web Apps & SaaS');
   const [showcaseProject, setShowcaseProject] = useState<any | null>(null);
 
-  // Category filter state
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const categories = ['All', 'Full-Stack', 'AI / ML', 'Hackathon', 'Tools & Utils'];
-
   // Interactive expanded expertise state
   const [expandedCategory, setExpandedCategory] = useState<number>(0);
-
-  const filteredProjects = featuredProjects.filter((p) => {
-    if (selectedCategory === 'All') return true;
-    if (!p.tags || p.tags.length === 0) return true;
-    const tagsLower = p.tags.map((t: string) => t.toLowerCase());
-    if (selectedCategory === 'Full-Stack') return tagsLower.some((t: string) => t.includes('web') || t.includes('next') || t.includes('react') || t.includes('fullstack') || t.includes('app'));
-    if (selectedCategory === 'AI / ML') return tagsLower.some((t: string) => t.includes('ai') || t.includes('ml') || t.includes('model') || t.includes('python') || t.includes('agent'));
-    if (selectedCategory === 'Hackathon') return tagsLower.some((t: string) => t.includes('hackathon') || t.includes('challenge') || t.includes('event'));
-    if (selectedCategory === 'Tools & Utils') return tagsLower.some((t: string) => t.includes('tool') || t.includes('util') || t.includes('cli') || t.includes('lib'));
-    return true;
-  });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -67,12 +52,22 @@ export default function LandingPageClient({
       setWindowDimensions({ w: window.innerWidth, h: window.innerHeight });
     };
 
+    const handleOpenQuote = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.service) {
+        setQuoteService(customEvent.detail.service);
+      }
+      setQuoteModalOpen(true);
+    };
+
     setWindowDimensions({ w: window.innerWidth, h: window.innerHeight });
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('resize', handleResize);
+    window.addEventListener('open-quote-modal', handleOpenQuote);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('open-quote-modal', handleOpenQuote);
     };
   }, []);
 
@@ -185,11 +180,8 @@ export default function LandingPageClient({
 
         {/* Latest Projects Asymmetric Editorial Showcase Component */}
         <LatestProjectsShowcase
-          projects={filteredProjects}
+          projects={featuredProjects}
           totalCount={stats?.projectsCount || 0}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          categories={categories}
           onProjectClick={(p) => setShowcaseProject(p)}
         />
       </section>

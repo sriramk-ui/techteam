@@ -17,18 +17,10 @@ const serviceOptions = [
   'Full Stack Consultation & Code Audit',
 ];
 
-const budgetRanges = [
-  '$500 - $1,500',
-  '$1,500 - $3,500',
-  '$3,500 - $7,500',
-  '$7,500+',
-];
-
 export default function QuoteModal({ isOpen, onClose, initialService }: QuoteModalProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [service, setService] = useState(initialService || serviceOptions[0]);
-  const [budget, setBudget] = useState(budgetRanges[1]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -50,7 +42,7 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, service, budget, message }),
+        body: JSON.stringify({ name, email, service, message }),
       });
 
       const data = await res.json();
@@ -206,34 +198,6 @@ export default function QuoteModal({ isOpen, onClose, initialService }: QuoteMod
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
-              </div>
-
-              <div>
-                <label className="editorial-metadata" style={{ display: 'block', marginBottom: '6px' }}>
-                  ESTIMATED BUDGET
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                  {budgetRanges.map((b) => (
-                    <button
-                      key={b}
-                      type="button"
-                      onClick={() => setBudget(b)}
-                      style={{
-                        padding: '10px',
-                        fontSize: '0.78rem',
-                        fontFamily: 'JetBrains Mono, monospace',
-                        fontWeight: 700,
-                        border: `1px solid ${budget === b ? '#EC170F' : 'var(--border-subtle)'}`,
-                        background: budget === b ? 'rgba(236,23,15,0.12)' : 'transparent',
-                        color: budget === b ? '#EC170F' : 'var(--text-muted)',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                      }}
-                    >
-                      {b}
-                    </button>
-                  ))}
-                </div>
               </div>
 
               <div>

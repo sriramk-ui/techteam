@@ -7,6 +7,7 @@ import { GithubIcon, LinkedinIcon, InstagramIcon } from '@/components/atoms/icon
 export default function Footer() {
   return (
     <footer
+      id="contact"
       style={{
         background: 'var(--bg-base)',
         borderTop: '1px solid var(--border-subtle)',
@@ -32,6 +33,21 @@ export default function Footer() {
             LET&apos;S BUILD <br />
             <span style={{ color: '#EC170F' }}>SOMETHING.</span>
           </h2>
+
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Link
+              href="/contact"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('open-quote-modal'));
+                }
+              }}
+              className="editorial-btn-primary"
+            >
+              <span>GET IN TOUCH / START A PROJECT</span>
+              <ArrowUpRight size={16} />
+            </Link>
+          </div>
         </div>
 
         {/* Editorial Divider */}
@@ -67,6 +83,7 @@ export default function Footer() {
               { label: '03 EXPERTISE', href: '/#expertise' },
               { label: '04 EVENTS', href: '/events' },
               { label: '05 ABOUT', href: '/#about' },
+              { label: '06 CONTACT', href: '/contact' },
             ].map((link) => (
               <Link
                 key={link.label}

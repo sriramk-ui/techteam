@@ -11,7 +11,7 @@ const navLinks = [
   { num: '03', label: 'EXPERTISE', href: '/#expertise', sectionId: 'expertise' },
   { num: '04', label: 'EVENTS', href: '/events', sectionId: 'events' },
   { num: '05', label: 'ABOUT', href: '/#about', sectionId: 'about' },
-  { num: '06', label: 'CONTACT', href: '/#contact', sectionId: 'contact' },
+  { num: '06', label: 'CONTACT', href: '/contact', sectionId: 'contact' },
 ];
 
 export default function Navbar() {
@@ -40,6 +40,19 @@ export default function Navbar() {
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, sectionId?: string) => {
+    if (href === '/contact' || href === '/#contact' || sectionId === 'contact') {
+      if (pathname === '/') {
+        e.preventDefault();
+        const element = document.getElementById('contact');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        window.dispatchEvent(new CustomEvent('open-quote-modal'));
+        setMobileOpen(false);
+        return;
+      }
+    }
+
     if (pathname === '/' && href.startsWith('/#')) {
       e.preventDefault();
       const targetId = href.replace('/#', '');
@@ -157,8 +170,8 @@ export default function Navbar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {/* Quick CTA */}
           <Link
-            href="/#contact"
-            onClick={(e) => handleNavClick(e, '/#contact')}
+            href="/contact"
+            onClick={(e) => handleNavClick(e, '/contact', 'contact')}
             className="editorial-btn-primary"
             style={{
               padding: '8px 18px',

@@ -7,7 +7,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import PageTransition from '@/components/atoms/PageTransition';
 import {
   LayoutDashboard, FolderGit2, Calendar, Shield, Users,
-  LogOut, Zap, ChevronRight, User, Menu, X,
+  LogOut, Zap, ChevronRight, User, Menu, X, Mail,
 } from 'lucide-react';
 
 const sidebarLinks = [
@@ -15,6 +15,7 @@ const sidebarLinks = [
   { label: 'Projects', href: '/dashboard/projects', icon: FolderGit2 },
   { label: 'Events', href: '/dashboard/events', icon: Calendar },
   { label: 'Team', href: '/dashboard/members', icon: Users },
+  { label: 'Inquiries', href: '/dashboard/contact', icon: Mail },
   { label: 'Vault', href: '/vault', icon: Shield },
   { label: 'Profile', href: '/dashboard/profile', icon: User },
 ];

@@ -26,9 +26,9 @@ interface Project {
 interface LatestProjectsShowcaseProps {
   projects: Project[];
   totalCount?: number;
-  selectedCategory: string;
-  onSelectCategory: (category: string) => void;
-  categories: string[];
+  selectedCategory?: string;
+  onSelectCategory?: (category: string) => void;
+  categories?: string[];
   onProjectClick: (project: Project) => void;
   onVaultClick?: (project: Project) => void;
 }
@@ -69,19 +69,6 @@ export default function LatestProjectsShowcase({
             VIEW ALL PROJECTS ({totalCount > 0 ? totalCount : projects.length}) <ArrowRight size={16} />
           </Link>
         </div>
-      </div>
-
-      {/* Category Filter Pills */}
-      <div className="filter-pills-container">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => onSelectCategory(cat)}
-            className={`filter-pill ${selectedCategory === cat ? 'active' : ''}`}
-          >
-            {cat}
-          </button>
-        ))}
       </div>
 
       {/* Asymmetric Project Grid */}

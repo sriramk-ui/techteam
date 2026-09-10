@@ -16,7 +16,10 @@ export const revalidate = 0;
 async function getTeamMembers() {
   try {
     await connectToDatabase();
-    const users = await User.find({}).select('name role profilePic socialLinks').lean();
+    const users = await User.find({
+      name: { $nin: ['Tech Team', 'tech team'] },
+      email: { $nin: ['techteam@gmail.com', 'techteam@team.dev'] }
+    }).select('name role profilePic socialLinks').lean();
     return JSON.parse(JSON.stringify(users));
   } catch (error) {
     console.error('Error fetching public team members:', error);
